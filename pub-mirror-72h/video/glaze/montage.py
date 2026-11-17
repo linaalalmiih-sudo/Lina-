@@ -19,16 +19,16 @@ def f(prefix):
 
 
 # lumineux : on éclaircit les ombres, on garde la peau et les reflets naturels, très légère touche chaude
-CHAUD = 'eq=brightness=0.03:contrast=1.02:saturation=1.05:gamma=1.12,colorbalance=rh=0.015:bh=-0.015'
+CHAUD = 'null'  # couleurs naturelles : aucun étalonnage, les images restent comme filmées
 VERT = 'scale=1080:1920:flags=lanczos'
 # (nom, fichier, début dans la source, durée dans le film, filtres)
 PLANS = [
     ('a_lisseur', f('duo.mp4'), 0.5, 3.0, VERT + ',unsharp=5:5:0.5,' + CHAUD),
-    ('b_frisottis', f('c3e1fcb9'), 0.5, 3.0, 'crop=608:1080:656:0,scale=1080:1920:flags=lanczos,unsharp=5:5:0.6,eq=brightness=0.02:contrast=1.02:saturation=0.85:gamma=1.05'),
+    ('b_frisottis', f('c3e1fcb9'), 0.5, 3.0, 'crop=608:1080:656:0,scale=1080:1920:flags=lanczos,unsharp=5:5:0.6'),
     ('c_probleme', f('probleme.png'), 0, 3.0, 'photo'),
     ('d_revelation', None, 0, 4.0, 'couleur'),
     ('e_mirror', f('cd54ce23'), 1.6, 3.5, VERT + ',' + CHAUD),
-    ('f_test', f('b598ca90'), 0.4, 2.5, "scale=1920:1080,split[a][b];[a]scale=-2:1920,crop=1080:1920,gblur=sigma=40,eq=brightness=0.04[fond];[b]scale=1080:608[av];[fond][av]overlay=0:656," + CHAUD),
+    ('f_test', f('b598ca90'), 0.4, 2.5, "scale=1920:1080,split[a][b];[a]scale=-2:1920,crop=1080:1920,gblur=sigma=40[fond];[b]scale=1080:608[av];[fond][av]overlay=0:656," + CHAUD),
     ('g_regard', f('3d9c0641'), 4.6, 3.0, VERT + ',' + CHAUD),
     ('h_duo', f('IMG_0394'), 0, 3.0, 'photo-droite'),
 ]
