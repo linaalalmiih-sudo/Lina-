@@ -20,7 +20,7 @@ function txt(c, s, x, y, o) {
   c.font = `${o.style || ''} ${o.w || 300} ${o.size}px ${o.fam || 'Montserrat'}`; c.letterSpacing = (o.ls || 0) + 'px';
   if (o.grad) { const g = c.createLinearGradient(0, y - o.size / 2, 0, y + o.size / 2); g.addColorStop(0, GOLD_L); g.addColorStop(.55, GOLD); g.addColorStop(1, GOLD_D); c.fillStyle = g; }
   else c.fillStyle = o.col || CREAM;
-  c.shadowColor = 'rgba(0,0,0,.75)'; c.shadowBlur = o.blur || 18;
+  c.shadowColor = 'rgba(0,0,0,.75)'; c.shadowBlur = o.blur == null ? 18 : o.blur;
   c.fillText(s, x + (o.ls || 0) / 2, y); c.restore();
 }
 
@@ -32,7 +32,7 @@ function overlay(t) {
   if (t > 2.8 && t < 6.85) {
     const a = clamp(Math.min((t - 2.8) / .4, (6.85 - t) / .25));
     c.save(); c.globalAlpha = a; c.strokeStyle = GOLD; c.lineWidth = 2; c.strokeRect(40, 636, 1000, 648); c.restore();
-    txt(c, 'LE TEST', 540, 560, { size: 30, w: 400, ls: 14, col: GOLD, a });
+    txt(c, 'LE TEST', 540, 590, { size: 34, w: 600, ls: 14, col: '#3a2015', blur: 0, a });
   }
   // 72H sur le regard
   if (t > 15.3 && t < 18.05) {
@@ -50,17 +50,17 @@ function overlay(t) {
   // signature
   if (t > 21.0) {
     const a0 = eOut(seg(t, 21.0, 21.6));
-    c.fillStyle = `rgba(8,4,2,${.5 * a0})`; c.fillRect(0, 0, W, H);
+    c.fillStyle = `rgba(255,248,236,${.35 * a0})`; c.fillRect(0, 0, W, H);
     const a1 = eOut(seg(t, 21.2, 22.0));
     if (logo.complete && logo.naturalWidth) {
       c.save(); c.globalAlpha = a1; c.translate(540, 600); const s = lerp(.94, 1, a1); c.scale(s, s);
       c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = 40; c.drawImage(logo, -220, -220, 440, 440); c.restore();
     }
     const a2 = eOut(seg(t, 21.7, 22.4));
-    txt(c, 'MIRROR 72H', 540, 930, { size: 50, w: 300, ls: 22, grad: true, a: a2 });
-    c.save(); c.globalAlpha = a2; c.strokeStyle = GOLD; c.lineWidth = 1.5; c.beginPath(); c.moveTo(470, 990); c.lineTo(610, 990); c.stroke(); c.restore();
-    txt(c, "La météo n'a plus le dernier mot.", 540, 1070, { size: 50, w: 500, style: 'italic', fam: 'Playfair Display', a: eOut(seg(t, 21.5, 22.4)) });
-    txt(c, 'GLOSSBYK.COM', 540, 1560, { size: 32, w: 400, ls: 12, col: GOLD, a: eOut(seg(t, 22.6, 23.2)) });
+    txt(c, 'MIRROR 72H', 540, 930, { size: 52, w: 400, ls: 22, col: '#3a2015', a: a2, blur: 0 });
+    c.save(); c.globalAlpha = a2; c.strokeStyle = GOLD_D; c.lineWidth = 2; c.beginPath(); c.moveTo(470, 990); c.lineTo(610, 990); c.stroke(); c.restore();
+    txt(c, "La météo n'a plus le dernier mot.", 540, 1070, { size: 52, w: 500, style: 'italic', fam: 'Playfair Display', col: '#2a1712', blur: 0, a: eOut(seg(t, 21.5, 22.4)) });
+    txt(c, 'GLOSSBYK.COM', 540, 1560, { size: 34, w: 500, ls: 12, col: '#3a2015', blur: 0, a: eOut(seg(t, 22.6, 23.2)) });
   }
   // sous-titres
   if (STR) for (const [a, b, s] of VOIX_OFF) {

@@ -20,13 +20,14 @@ def f(prefix):
     raise SystemExit('fichier manquant : ' + prefix)
 
 
-CHAUD = 'eq=contrast=1.08:saturation=0.92:gamma=0.97,colorbalance=rm=0.03:bm=-0.03:rh=0.02:bh=-0.03'
+# lumineux : on éclaircit les ombres, on garde la peau et les reflets naturels, très légère touche chaude
+CHAUD = 'eq=brightness=0.03:contrast=1.02:saturation=1.05:gamma=1.12,colorbalance=rh=0.015:bh=-0.015'
 VERT = 'scale=1080:1920:flags=lanczos'
 # (nom, fichier, début dans la source, durée dans le film, filtres)
 PLANS = [
     ('a_frisottis', f('c3e1fcb9'), 0.5, 2.8, 'crop=608:1080:656:0,scale=1080:1920:flags=lanczos,unsharp=5:5:0.6,'
-     'eq=brightness=-0.05:contrast=1.06:saturation=0.5,colorbalance=bs=0.05:rs=-0.03:bm=0.03'),
-    ('b_avant_apres', f('b598ca90'), 0.2, 3.8, "scale=1920:1080,zoompan=z='1+0.03*on/120':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':d=1:s=1080x608:fps=30,pad=1080:1920:0:656:black," + CHAUD),
+     'eq=brightness=0.02:contrast=1.02:saturation=0.85:gamma=1.05'),
+    ('b_avant_apres', f('b598ca90'), 0.2, 3.8, "scale=1920:1080,split[a][b];[a]scale=-2:1920,crop=1080:1920,gblur=sigma=40,eq=brightness=0.04[fond];[b]zoompan=z='1+0.03*on/120':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':d=1:s=1080x608:fps=30[av];[fond][av]overlay=0:656," + CHAUD),
     ('c_gel', f('cd54ce23'), 1.6, 3.6, VERT + ',' + CHAUD),
     ('d_peigne', f('b146d09b'), 6.6, 2.8, VERT + ',' + CHAUD),
     ('e_cheveux', f('3d9c0641'), 0.2, 2.0, VERT + ',' + CHAUD),
@@ -43,7 +44,7 @@ for i, (nom, src, deb, dur, filt) in enumerate(PLANS):
         n = int(round(d * FPS))
         z = "zoompan=z='1+0.07*on/%d':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1080x1920:fps=%d" % (n, FPS)
         pre = 'scale=2560:3840:flags=lanczos,crop=2160:3840,'
-        post = CHAUD if filt == 'photo' else 'gblur=sigma=28,eq=brightness=-0.12:contrast=1.05:saturation=0.9'
+        post = CHAUD if filt == 'photo' else 'gblur=sigma=28,eq=brightness=0.02:saturation=1.0'
         cmd = ['ffmpeg', '-loglevel', 'error', '-y', '-loop', '1', '-i', src, '-t', f'{d:.3f}', '-vf', pre + z + ',' + post + ',format=yuv420p',
                '-r', str(FPS), '-c:v', 'libx264', '-crf', '12', '-preset', 'medium', out]
     else:
