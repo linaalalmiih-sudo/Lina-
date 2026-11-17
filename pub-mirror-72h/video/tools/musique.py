@@ -234,13 +234,9 @@ for a, b in [(13.95, 14.95), (15.0, 16.0)]:  # lisseur
     s = band(noise(d), 2500, 9000) * (.5 + .5 * rng.random(int(d * SR)) ** 8) * np.sin(np.pi * t_axis(d) / d)
     add(sfx, s, a, .09)
     pop(a, .6)
-for k in range(14):
-    tick(14.0 + 1.0 * (k / 14) ** .7)
 rainlen = 1.5
 add(sfx, band(noise(rainlen), 600, 7000) * np.minimum(1, np.minimum(t_axis(rainlen) / .2, (rainlen - t_axis(rainlen)) / .2)), 16.1, .12)
-for k in range(18):
-    tick(16.15 + 1.1 * (k / 18) ** .7)
-add(sfx, bell(midi(93), d=.8, gain=.1), 17.25)
+add(sfx, bell(midi(93), d=.8, gain=.1), 16.15)
 shimmer(17.7, 1.2, .7)
 whoosh(21.35, 21.65, 1.2)
 shimmer(21.5, 1.0, 1.0)

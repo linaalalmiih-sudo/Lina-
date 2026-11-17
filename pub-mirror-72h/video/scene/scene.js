@@ -681,8 +681,7 @@ function scene3(c, t) { // la solution
     flatIron(c, ironY, t);
     c.restore();
     punch(c, t, '🔥 PROTECTION THERMIQUE', a, CUT.pluie - .03, 220, { size: 54, pill: C.choco, border: C.or });
-    const deg = Math.round(230 * eOut(seg(t, a + .1, 15.0)));
-    bigCounter(c, t, "JUSQU'À " + deg, '°C', 360, a + .1, 92);
+    bigCounter(c, t, "JUSQU'À 230", '°C', 360, a + .1, 92);
     bub(c, t, 'mirror', 'Je te protège du lisseur… et de la pluie.', 'm4', 1420, { off: true, tailUp: true });
   }
 }
@@ -711,8 +710,7 @@ function scene4(c, t) { // le lendemain sous la pluie, puis le miroir
     rain(c, t, 70, 4, .5, 1900, 90);
     c.restore();
     punch(c, t, '☔ ANTI-HUMIDITÉ JUSQU\'À', a + .02, CUT.miroir - .03, 210, { size: 50, pill: C.choco, border: C.or });
-    const h = Math.round(72 * eOut(seg(t, a + .05, 17.25)));
-    bigCounter(c, t, h, 'H', 380, a + .02, 190);
+    bigCounter(c, t, 72, 'H', 380, a + .02, 190);
     punch(c, t, 'le lendemain', a + .05, CUT.miroir - .03, 1520, { size: 46, color: '#fff', stroke: 'rgba(40,30,25,.8)' });
   } else {
     const a = CUT.miroir;
