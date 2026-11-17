@@ -5,8 +5,13 @@ la musique et les bruitages sont synthétisés (aucun son existant n'est copié)
 Même principe que le kit « Lancement de produit » : on modifie la scène, on relance le rendu.
 
 **Style :** motion design illustré (pas de prise de vue réelle). Le tube est redessiné fidèlement d'après la photo du
-vrai produit, avec les vraies mentions de l'étiquette. Pas de voix : les dialogues s'affichent en bulles, mot après mot,
-pour une vidéo qui se comprend **sans le son** (comme la plupart des vues sur TikTok et Meta).
+vrai produit, avec les vraies mentions de l'étiquette.
+
+**Voix :** deux voix françaises de synthèse Piper (libres, `rhasspy/piper-voices` sur Hugging Face) : `fr_FR-siwis-medium`
+pour la fille, `fr_FR-upmc-medium` (Jessica, un peu plus grave) pour Mirror 72H. Les bouches s'animent d'après le volume
+réel de chaque réplique (`scene/voix.js`), la musique baisse de 9 dB sous les voix. Les dialogues restent aussi en bulles,
+pour que la vidéo se comprenne **sans le son**. Pour mettre de vraies voix enregistrées : remplacer les fichiers
+`audio/voix/<id>.wav` (même nom, 48 kHz) et relancer `tools/mix.py` puis le rendu.
 
 ## L'histoire
 
@@ -20,14 +25,17 @@ pour une vidéo qui se comprend **sans le son** (comme la plupart des vues sur T
 | 21 – 23 | Packshot : le tube plongé dans la coupe à champagne de gel doré. « LA MÉTÉO N'A PLUS LE DERNIER MOT. ☔✨ » ; « Ton brushing mérite mieux que de finir en nuage. » |
 | 23 – 25 | Fin : logo, « MIRROR 72H — GLOSS BY K », bouton « COMMANDE LE TIEN MAINTENANT 👇 », www.glossbyk.com |
 
-Musique : 120 BPM, ré majeur, coupes et apparitions sur les temps. Mix à −14 LUFS, crête à −2,5 dBFS.
+Musique : 120 BPM, ré majeur. Mix voix + musique + bruitages à −14 LUFS.
 Le logo utilisé (`assets/logo-fr.png`) est le logo officiel sans le slogan anglais.
 
 ## Refaire la vidéo
 
 Il faut Node 18+, Playwright avec Chromium, Python 3 avec numpy, ffmpeg. Depuis ce dossier :
 
+    pip install piper-tts   # et télécharger les deux voix .onnx + .onnx.json dans un dossier VOIX
+    python3 tools/voix.py VOIX
     python3 tools/musique.py
+    python3 tools/mix.py    # place les voix (instants dans DEBUTS) et écrit scene/voix.js
     ffmpeg -y -i audio/mix-brut.wav -af "acompressor=threshold=-20dB:ratio=3:attack=5:release=90:makeup=4,alimiter=limit=0.7:level=false,loudnorm=I=-14:TP=-1.5:LRA=9,volume=-1dB" -ar 48000 audio/mix.wav
     node tools/rendu.mjs video --dpr 2 --fps 30 --workers 4 --crf 17 --out out/muet-4k.mp4
     ffmpeg -y -i out/muet-4k.mp4 -i audio/mix.wav -c:v copy -c:a aac -b:a 192k -shortest mirror-72h-4k.mp4
@@ -40,6 +48,8 @@ Images d'essai : `node tools/rendu.mjs stills --dpr 0.5 --times 1,6,12.5,22 --di
 - **Un dialogue ou un texte** : `scene/scene.js`, appels `bubble(...)` (bulles) et `punch(...)` (gros textes), dans
   `scene1` à `scene5`. Le premier nombre après le texte est l'instant d'apparition, le second l'instant de disparition.
 - **L'étiquette du tube** : fonction `tube(...)`.
-- **Un instant** : les secondes sont écrites dans chaque scène ; si un temps fort bouge, déplacer aussi le bruitage
-  correspondant dans `tools/musique.py` (section « bruitages »).
+- **Une réplique** : son texte prononcé dans `tools/voix.py`, son instant dans `DEBUTS` de `tools/mix.py`, son texte
+  affiché dans `scene/scene.js` (appels `bub(...)`).
+- **Un instant** : les coupes sont dans `CUT` en tête des scènes de `scene/scene.js` ; si un temps fort bouge, déplacer
+  aussi le bruitage correspondant dans `tools/musique.py` (section « bruitages »).
 - **La musique** : `tools/musique.py` (accords `CHORDS`, mélodie `MOTIF`).

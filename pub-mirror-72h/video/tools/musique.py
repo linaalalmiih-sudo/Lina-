@@ -1,6 +1,6 @@
 """Musique originale et bruitages de la pub Mirror 72H (25 s, 120 BPM, ré majeur).
 Tout est synthétisé ici avec numpy : aucun son existant n'est copié.
-Sorties : audio/musique.wav, audio/bruitages.wav, audio/mix.wav (avant normalisation)."""
+Sorties : audio/musique.wav, audio/bruitages.wav (tools/mix.py ajoute les voix)."""
 import numpy as np, wave, os, sys
 
 SR = 48000
@@ -145,15 +145,15 @@ for rep in range(3):
     base = 10.0 + rep * 4.0
     for off, n in MOTIF:
         tt = base + off * BEAT
-        if tt < 21.0 and not (16.0 <= tt < 18.0 and off > 5):
+        if tt < 21.5 and not (16.0 <= tt < 18.0 and off > 5):
             add(mus, pluck(n), tt)
 
 # montée 20 → 21 : roulement
 for k in range(16):
-    add(mus, snap(), 20.0 + k * BEAT / 8, .25 + .5 * k / 16)
+    add(mus, snap(), 20.5 + k * BEAT / 8, .25 + .5 * k / 16)
 # impact 21 s et accord final 24 s
-add(mus, band(noise(1.6), 3000, None) * np.exp(-t_axis(1.6) * 2.5), 21.0, .18)
-add(mus, kick(1.2), 21.0, 1.0)
+add(mus, band(noise(1.6), 3000, None) * np.exp(-t_axis(1.6) * 2.5), 21.5, .18)
+add(mus, kick(1.2), 21.5, 1.0)
 add(mus, ep([50, 57, 62, 66, 69], d=1.0, gain=.12), 24.0)
 add(mus, bass(38, d=1.0, gain=.45), 24.0)
 add(mus, kick(1.1), 24.0, .9)
@@ -218,38 +218,37 @@ def shimmer(at, d=1.0, g=1.0):
 
 # 0 s : la pluie dehors s'efface, porte claquée
 add(sfx, band(noise(1.2), 800, 6000) * np.linspace(1, 0, int(1.2 * SR)), 0, .05)
-pouf(3.0)
+pouf(3.5)
 whoosh(4.80, 5.20)
 add(sfx, bell(midi(91)), 5.0)
 add(sfx, bell(midi(98), d=1.0, gain=.08), 5.08)
 shimmer(5.05, .8, .7)
-bloop(7.03, 300, 900, 1.2)  # « ?! »
-add(sfx, bell(midi(96), d=.6, gain=.10), 9.3)  # clin d'œil
-whoosh(9.80, 10.20, 1.1)
-bloop(10.45, 500, 220)  # pression du tube
-bloop(10.80, 260, 120, 1.3)  # la goutte tombe
-shimmer(10.9, 1.0, .8)
-for a, b in [(12.05, 12.95), (13.0, 13.9)]:  # lisseur
+bloop(7.62, 300, 900, 1.2)  # « ?! »
+add(sfx, bell(midi(96), d=.6, gain=.10), 9.85)  # clin d'œil
+whoosh(11.40, 11.80, 1.1)
+bloop(11.95, 500, 220)  # pression du tube
+bloop(12.35, 260, 120, 1.3)  # la goutte tombe
+shimmer(12.4, 1.0, .8)
+for a, b in [(13.95, 14.95), (15.0, 16.0)]:  # lisseur
     d = b - a
     s = band(noise(d), 2500, 9000) * (.5 + .5 * rng.random(int(d * SR)) ** 8) * np.sin(np.pi * t_axis(d) / d)
     add(sfx, s, a, .09)
     pop(a, .6)
 for k in range(14):
-    tick(12.1 + 1.4 * (k / 14) ** .7)
-shimmer(14.0, 1.4, 1.0)
-rainlen = 2.0
-add(sfx, band(noise(rainlen), 600, 7000) * np.minimum(1, np.minimum(t_axis(rainlen) / .2, (rainlen - t_axis(rainlen)) / .2)), 16.0, .12)
+    tick(14.0 + 1.0 * (k / 14) ** .7)
+rainlen = 1.5
+add(sfx, band(noise(rainlen), 600, 7000) * np.minimum(1, np.minimum(t_axis(rainlen) / .2, (rainlen - t_axis(rainlen)) / .2)), 16.1, .12)
 for k in range(18):
-    tick(16.15 + 1.35 * (k / 18) ** .7)
-add(sfx, bell(midi(93), d=.8, gain=.1), 17.5)
-shimmer(18.0, 1.2, .7)
-whoosh(20.85, 21.15, 1.2)
-shimmer(21.0, 1.0, 1.0)
-pouf(22.75, .8)
-add(sfx, bell(midi(96), d=.6, gain=.10), 22.85)
-for at in [0.0, 1.0, 10.5, 12.0, 14.0, 14.5, 16.05, 21.05, 21.25, 23.05, 23.45]:
+    tick(16.15 + 1.1 * (k / 18) ** .7)
+add(sfx, bell(midi(93), d=.8, gain=.1), 17.25)
+shimmer(17.7, 1.2, .7)
+whoosh(21.35, 21.65, 1.2)
+shimmer(21.5, 1.0, 1.0)
+pouf(24.15, .6)
+add(sfx, bell(midi(96), d=.6, gain=.10), 24.0)
+for at in [0.0, 1.0, 11.75, 12.5, 13.9, 16.1, 21.55, 21.75, 23.3, 23.7]:
     pop(at)
-add(sfx, bell(midi(86)), 23.05)
+add(sfx, bell(midi(86)), 23.3)
 
 def write(path, x):
     x = np.clip(x, -1, 1)
@@ -264,5 +263,4 @@ mix = mus_n * .8 + sfx_n * .75
 mix /= np.max(np.abs(mix)) / .7
 write(os.path.join(OUT, 'musique.wav'), mus_n)
 write(os.path.join(OUT, 'bruitages.wav'), sfx_n)
-write(os.path.join(OUT, 'mix-brut.wav'), mix)
 print('audio écrit dans', os.path.abspath(OUT))

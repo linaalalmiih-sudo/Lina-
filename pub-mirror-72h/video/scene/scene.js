@@ -564,20 +564,35 @@ function bigCounter(c, t, value, suffix, y, t0, size = 170) {
   c.restore();
 }
 
-// ---------- scènes ----------
+// ---------- scènes (calées sur les voix : scene/voix.js) ----------
+const VX = window.VOIX || {};
+const va = id => VX[id] ? VX[id].a : 0, vb = id => VX[id] ? VX[id].b : 0;
+// ouverture de bouche d'après la vraie voix
+function say(t, id) {
+  const v = VX[id]; if (!v || t < v.a || t > v.b) return 0;
+  const i = Math.floor((t - v.a) * 60), e = v.env;
+  return clamp(((e[i] || 0) + (e[i + 1] || 0) + (e[Math.max(0, i - 1)] || 0)) / 3);
+}
+const sayAll = (t, ...ids) => Math.max(...ids.map(id => say(t, id)));
+// bulle pendant la réplique
+const bub = (c, t, who, text, id, y, o = {}) => bubble(c, t, who, text, va(id) - .05, Math.max(vb(id) + .15, va(id) + .9), y, o);
+
+// découpage
+const CUT = { pan: 5.0, pardon: 7.6, oui: 8.25, serviette: 11.6, lisseur: 13.9, pluie: 16.1, miroir: 17.6, fier: 19.2, pack: 21.5, fin: 23.25 };
+
 function scene1(c, t) { // 0-5 : le hook
-  const zoom = 1 + .1 * eOut(seg(t, .3, .7)) + .04 * seg(t, .7, 4.8) + .05 * pulse(t, 3.0, .05, .4);
-  c.save(); camera(c, t, zoom, 540, 900, 7 + 18 * pulse(t, 3.0, .03, .35));
-  const puff = pulse(t, 3.0, .06, .5);
+  const P = 3.5;
+  const zoom = 1 + .1 * eOut(seg(t, .3, .7)) + .04 * seg(t, .7, 4.8) + .05 * pulse(t, P, .05, .4);
+  c.save(); camera(c, t, zoom, 540, 900, 7 + 18 * pulse(t, P, .03, .35));
+  const puff = pulse(t, P, .06, .5);
   const no = t > .15 && t < 1.0 ? Math.sin((t - .15) * 22) * .035 * (1 - seg(t, .7, 1)) : 0;
   mirrorScene(c, t, {
-    t, frizz: 1 + .35 * puff, expr: t < 4.05 ? 'angry' : 'blase', tilt: no,
-    talk: Math.max(talk(t, .05, .95), talk(t, 1.15, 2.95)), blink: pulse(t, 2.35, .05, .08) + pulse(t, 4.6, .05, .1),
-    look: t > 4.05 ? .6 : 0, coatWet: true, drips: true
+    t, frizz: 1 + .35 * puff, expr: t < 3.95 ? 'angry' : 'blase', tilt: no,
+    talk: sayAll(t, 'f1', 'f2'), blink: pulse(t, 2.35, .05, .08) + pulse(t, 4.6, .05, .1),
+    look: t > 3.95 ? .6 : 0, coatWet: true, drips: true
   });
-  // nuage « pouf »
-  if (t > 2.98 && t < 3.8) {
-    const k = seg(t, 2.98, 3.8), r = rng(5);
+  if (t > P - .02 && t < P + .8) {
+    const k = seg(t, P - .02, P + .8), r = rng(5);
     for (let i = 0; i < 18; i++) { const a = Math.PI * (1.02 + r() * .96), d = 400 + k * 170 * (.6 + r() * .6);
       c.fillStyle = `rgba(255,250,240,${.8 * (1 - k)})`; c.beginPath(); c.arc(540 + Math.cos(a) * d, 1010 + Math.sin(a) * d * 1.1, 30 + 40 * k * r(), 0, 7); c.fill(); }
     c.save(); c.globalAlpha = 1 - k; c.font = F('italic 800', 72); c.textAlign = 'center'; c.lineWidth = 12; c.strokeStyle = '#fff'; c.lineJoin = 'round';
@@ -586,118 +601,98 @@ function scene1(c, t) { // 0-5 : le hook
   c.restore();
   punch(c, t, '1H DE BRUSHING.', 0.0, 4.75, 230, { size: 86 });
   punch(c, t, '2 MIN SOUS LA PLUIE. 💀', 1.0, 4.75, 345, { size: 70, color: '#ffe4a8', rot: .02 });
-  bubble(c, t, 'fille', "Non mais c'est une blague ?!", .02, 1.05, 1440, { size: 54 });
-  bubble(c, t, 'fille', 'Une heure de lissage… et trois gouttes ont tout ruiné.', 1.12, 3.05, 1400);
+  bub(c, t, 'fille', "Non mais c'est une blague ?!", 'f1', 1440, { size: 54 });
+  bub(c, t, 'fille', 'Une heure de lissage… et trois gouttes ont tout ruiné !', 'f2', 1400);
 }
 
 function tubeFace(t, base) { return Object.assign({ open: 1, lx: 0, ly: 0, bl: 0, br: 0, smile: .6 }, base); }
 
-function scene2(c, t) { // 5-10 : le tube parle
-  if (t < 7) {
-    const z = 1 + .05 * seg(t, 5, 7);
+function scene2(c, t) { // le tube parle, « Pardon ?! », « Oui, c'est moi »
+  if (t < CUT.pardon) {
+    const z = 1 + .05 * seg(t, 5, CUT.pardon);
     c.save(); camera(c, t, z, 540, 900, 4);
     const open = eBack(seg(t, 5.12, 5.38));
     vanity(c, t, { x: 540, y: 880, s: 1, sweep: seg(t, 5.0, 5.7) * 1.4 - .2,
       squash: -.05 * pulse(t, 5.15, .05, .3),
-      face: tubeFace(t, { open, lx: -.55, br: eOut(seg(t, 5.4, 5.6)), talk: talk(t, 5.35, 6.9), blinkless: 1 }) });
+      face: tubeFace(t, { open, lx: -.55, br: eOut(seg(t, 5.4, 5.6)), talk: say(t, 'm1') }) });
     const r = rng(9);
     for (let i = 0; i < 14; i++) { const a = r() * 7, d = 230 + r() * 260, k = seg(t, 5.0 + r() * .2, 5.9 + r() * .4);
       sparkle(c, 540 + Math.cos(a) * d, 880 + Math.sin(a) * d * 1.4, 18 + r() * 26, Math.sin(k * Math.PI), k * 2); }
     c.restore();
-    bubble(c, t, 'mirror', 'Meuf… tu laisses vraiment la météo choisir ta coiffure ?', 5.3, 6.95, 1420, { tailUp: true, tail: 540 });
-  } else if (t < 8) {
+    bub(c, t, 'mirror', 'Meuf… tu laisses vraiment la météo choisir ta coiffure ?', 'm1', 1420, { tailUp: true, tail: 540 });
+  } else if (t < CUT.oui) {
+    const a = CUT.pardon;
     c.save();
-    const jolt = 1 - eBack(seg(t, 7.0, 7.22));
-    camera(c, t, 1.02 + .04 * seg(t, 7, 8), 540, 900, 8);
+    const jolt = 1 - eBack(seg(t, a, a + .22));
+    camera(c, t, 1.02 + .04 * seg(t, a, CUT.oui), 540, 900, 8);
     wall(c, '#e6d8c5', '#cdb79b');
     c.fillStyle = 'rgba(120,90,60,.2)'; c.fillRect(760, 200, 260, 1000);
-    woman(c, { t, x: 540 + jolt * 120, y: 1010, s: 2.05, tilt: jolt * .22, frizz: 1, expr: 'shock', talk: talk(t, 7.12, 7.6), look: -.4 });
+    woman(c, { t, x: 540 + jolt * 120, y: 1010, s: 2.05, tilt: jolt * .22, frizz: 1, expr: 'shock', talk: say(t, 'f3'), look: -.4 });
     c.save(); c.font = F(800, 120); c.textAlign = 'center'; c.lineWidth = 14; c.strokeStyle = '#fff'; c.lineJoin = 'round';
-    const k = eBack(seg(t, 7.05, 7.25)); c.translate(880, 360); c.scale(k, k); c.rotate(.2); c.strokeText('?!', 0, 0); c.fillStyle = '#b0472f'; c.fillText('?!', 0, 0); c.restore();
+    const k = eBack(seg(t, a + .05, a + .25)); c.translate(880, 360); c.scale(k, k); c.rotate(.2); c.strokeText('?!', 0, 0); c.fillStyle = '#b0472f'; c.fillText('?!', 0, 0); c.restore();
     c.restore();
-    bubble(c, t, 'fille', '…Pardon ?!', 7.05, 7.97, 1480, { size: 72 });
+    bubble(c, t, 'fille', '…Pardon ?!', a + .03, CUT.oui - .03, 1480, { size: 72 });
   } else {
-    c.save(); camera(c, t, 1.0 + .03 * seg(t, 8, 10), 540, 900, 4);
-    const bounce = pulse(t, 8.2, .06, .35);
-    const wink = t > 9.25 && t < 9.6 ? 1 : 0;
-    vanity(c, t, { x: 540, y: 820, s: 1.32, squash: .07 * bounce - .04 * pulse(t, 8.45, .05, .25), sweep: seg(t, 8.0, 9.4) * 1.5 - .2,
-      face: tubeFace(t, { lx: t < 9.2 ? 0 : .5, bl: .4 + .6 * bounce, br: .4 + .6 * bounce, talk: talk(t, 8.1, 9.2) + talk(t, 9.6, 9.95), wink, smile: .9 }) }, { table: 1420 });
+    const a = CUT.oui;
+    c.save(); camera(c, t, 1.0 + .03 * seg(t, a, CUT.serviette), 540, 900, 4);
+    const bounce = pulse(t, a + .2, .06, .35);
+    const wink = t > 9.75 && t < 10.1 ? 1 : 0;
+    vanity(c, t, { x: 540, y: 820, s: 1.32, squash: .07 * bounce - .04 * pulse(t, a + .45, .05, .25), sweep: seg(t, a, a + 1.4) * 1.5 - .2,
+      face: tubeFace(t, { lx: t < 9.7 ? 0 : .5, bl: .4 + .6 * bounce, br: .4 + .6 * bounce, talk: say(t, 'm2'), wink, smile: .9 }) }, { table: 1420 });
     c.restore();
-    bubble(c, t, 'mirror', "Oui, c'est moi qui parle. On aurait dû se rencontrer avant.", 8.05, 9.97, 1460, { tailUp: true });
+    bub(c, t, 'mirror', "Oui, c'est moi qui parle. On aurait dû se rencontrer avant.", 'm2', 1460, { tailUp: true });
   }
 }
 
-function scene3(c, t) { // 10-16 : la solution
-  if (t < 12) {
-    c.save(); camera(c, t, 1.0 + .03 * seg(t, 10, 12), 540, 900, 3);
-    // salle de bain
+function scene3(c, t) { // la solution
+  if (t < CUT.lisseur) {
+    const a = CUT.serviette;
+    c.save(); camera(c, t, 1.0 + .03 * seg(t, a, CUT.lisseur), 540, 900, 3);
     c.fillStyle = '#f2ebe2'; c.fillRect(-200, -200, W + 400, H + 400);
     c.strokeStyle = 'rgba(180,160,140,.35)'; c.lineWidth = 3;
     for (let x = -200; x < W + 200; x += 150) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x, H); c.stroke(); }
     for (let y = 0; y < H; y += 150) { c.beginPath(); c.moveTo(0, y); c.lineTo(W, y); c.stroke(); }
-    const glow = eOut(seg(t, 10.85, 11.7));
-    woman(c, { t, x: 540, y: 1080, s: 1.6, frizz: .12, wet: 1, expr: 'happy', talk: 0, look: .5, coat: '#f5efe7', goldGlow: glow * (1 - .5 * seg(t, 11.7, 12)), sweep: seg(t, 10.9, 11.9), shine: glow });
-    // serviette sur les épaules
+    const glow = eOut(seg(t, 12.4, 13.3));
+    woman(c, { t, x: 540, y: 1080, s: 1.6, frizz: .12, wet: 1, expr: 'happy', talk: 0, look: .5, coat: '#f5efe7', goldGlow: glow * (1 - .5 * seg(t, 13.3, 13.9)), sweep: seg(t, 12.45, 13.5), shine: glow });
     c.fillStyle = '#fbf8f3'; c.beginPath(); c.ellipse(540, 1560, 470, 120, 0, 0, 7); c.fill();
-    // le tube qui presse
-    const sq = .12 * pulse(t, 10.45, .1, .25);
-    tube(c, { x: 830, y: 420, s: .42, rot: .75, squash: sq, shadow: false, face: tubeFace(t, { lx: -.6, ly: .6, smile: .9 }) });
-    // goutte de gel
+    const sq = .12 * pulse(t, 11.95, .1, .25);
+    tube(c, { x: 830, y: 420, s: .42, rot: .75, squash: sq, shadow: false, face: tubeFace(t, { lx: -.6, ly: .6, smile: .9, talk: say(t, 'm3') * .8 }) });
     const tipX = 830 - Math.sin(.75) * 450 * .42, tipY = 420 + Math.cos(.75) * 450 * .42;
-    if (t > 10.42 && t < 10.85) {
-      const k = seg(t, 10.45, 10.8), x = lerp(tipX, 560, k), y = lerp(tipY, 760, eIn(k)) - Math.sin(k * Math.PI) * 30;
+    if (t > 11.97 && t < 12.4) {
+      const k = seg(t, 12.0, 12.35), x = lerp(tipX, 560, k), y = lerp(tipY, 760, eIn(k)) - Math.sin(k * Math.PI) * 30;
       const g = c.createRadialGradient(x - 8, y - 10, 2, x, y, 34); g.addColorStop(0, '#fff6cf'); g.addColorStop(.4, '#efcc6d'); g.addColorStop(1, '#a8761f');
       c.fillStyle = g; c.beginPath(); c.ellipse(x, y, 26, 32, 0, 0, 7); c.fill();
     }
-    if (t > 10.8) { const r = rng(14); for (let i = 0; i < 18; i++) { const k = seg(t, 10.8 + r() * .3, 11.8 + r() * .3);
+    if (t > 12.35) { const r = rng(14); for (let i = 0; i < 18; i++) { const k = seg(t, 12.35 + r() * .3, 13.35 + r() * .3);
       sparkle(c, 540 + (r() - .5) * 560, 700 + r() * 600, 12 + r() * 18, Math.sin(k * Math.PI), k * 3); } }
     c.restore();
-    punch(c, t, '💗 SANS RINÇAGE', 10.5, 11.95, 230, { size: 64, pill: C.choco, border: C.or });
-    bubble(c, t, 'mirror', 'Mirror 72H. Sur cheveux essorés, avant ton brushing.', 10.05, 11.97, 1400, { off: true, tailUp: true, tail: 760, tailDx: 60 });
-  } else if (t < 14) {
+    punch(c, t, '💗 SANS RINÇAGE', 11.75, CUT.lisseur - .03, 230, { size: 64, pill: C.choco, border: C.or });
+    punch(c, t, '✨ ANTI-FRISOTTIS', 12.5, CUT.lisseur - .03, 355, { size: 64, pill: C.choco, border: C.or, rot: .02 });
+    bub(c, t, 'mirror', 'Sur cheveux essorés, avant ton brushing…', 'm3', 1400, { off: true, tailUp: true, tail: 760, tailDx: 60 });
+  } else {
+    const a = CUT.lisseur;
     c.save(); camera(c, t, 1.06, 540, 900, 3);
     const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#ead8c3'); g.addColorStop(1, '#c4a382');
     c.fillStyle = g; c.fillRect(-200, -200, W + 400, H + 400);
-    const p1 = eIO(seg(t, 12.05, 12.95)), p2 = eIO(seg(t, 13.0, 13.9));
-    const ironY = t < 13 ? lerp(160, 1780, p1) : lerp(160, 1780, p2);
-    const smooth = t < 13 ? ironY : 2000;
-    lock(c, t, smooth, t < 13 ? .7 : .7 + .3 * p2, 540, 300, 30, 3);
+    const p1 = eIO(seg(t, a + .05, 14.95)), p2 = eIO(seg(t, 15.0, 16.0));
+    const ironY = t < 15 ? lerp(160, 1780, p1) : lerp(160, 1780, p2);
+    const smooth = t < 15 ? ironY : 2000;
+    lock(c, t, smooth, t < 15 ? .7 : .7 + .3 * p2, 540, 300, 30, 3);
     flatIron(c, ironY, t);
     c.restore();
-    c.save(); c.translate(0, 0);
-    punch(c, t, '🔥 PROTECTION THERMIQUE', 12.0, 13.97, 220, { size: 54, pill: C.choco, border: C.or });
-    const deg = Math.round(230 * eOut(seg(t, 12.1, 13.5)));
-    bigCounter(c, t, "JUSQU'À " + deg, '°C', 360, 12.1, 92);
-    c.restore();
-    bubble(c, t, 'mirror', 'Je te protège du lisseur…', 12.05, 13.97, 1420, { off: true, tailUp: true });
-  } else {
-    c.save(); camera(c, t, 1.04 - .03 * seg(t, 14, 16), 540, 900, 2);
-    const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#2b170f'); g.addColorStop(1, '#5a3a24');
-    c.fillStyle = g; c.fillRect(-200, -200, W + 400, H + 400);
-    bokeh(c, t, 10, 8, ['rgba(255,205,130,A)'], .4);
-    c.save(); c.translate(540, 960); c.rotate(-.18); c.translate(-540, -960);
-    lock(c, t * .5, 2400, 1, 540, 760, 70, 5);
-    c.restore();
-    // reflet miroir qui balaie
-    const sw = seg(t, 14.1, 15.6);
-    c.save(); c.globalCompositeOperation = 'lighter';
-    const sx = lerp(-300, 1400, eIO(sw));
-    const gg = c.createLinearGradient(sx - 200, 0, sx + 200, 300); gg.addColorStop(0, 'rgba(255,220,170,0)'); gg.addColorStop(.5, 'rgba(255,225,180,.38)'); gg.addColorStop(1, 'rgba(255,220,170,0)');
-    c.fillStyle = gg; c.fillRect(0, 0, W, H); c.restore();
-    const r = rng(31); for (let i = 0; i < 22; i++) { const k = seg(t, 14 + r() * 1.4, 14.6 + r() * 1.4); sparkle(c, r() * W, 300 + r() * 1300, 10 + r() * 22, Math.sin(k * Math.PI), k * 2); }
-    c.restore();
-    punch(c, t, '✨ ANTI-FRISOTTIS', 14.0, 15.97, 220, { size: 60, pill: C.choco, border: C.or });
-    punch(c, t, '☔ ANTI-HUMIDITÉ', 14.5, 15.97, 345, { size: 60, pill: C.choco, border: C.or, rot: .02 });
-    bubble(c, t, 'mirror', '…et de la pluie. Frisottis sous contrôle.', 14.05, 15.97, 1420, { off: true, tailUp: true });
+    punch(c, t, '🔥 PROTECTION THERMIQUE', a, CUT.pluie - .03, 220, { size: 54, pill: C.choco, border: C.or });
+    const deg = Math.round(230 * eOut(seg(t, a + .1, 15.0)));
+    bigCounter(c, t, "JUSQU'À " + deg, '°C', 360, a + .1, 92);
+    bub(c, t, 'mirror', 'Je te protège du lisseur… et de la pluie.', 'm4', 1420, { off: true, tailUp: true });
   }
 }
 
-function scene4(c, t) { // 16-19.5 : dehors, puis le miroir
-  if (t < 18) {
+function scene4(c, t) { // le lendemain sous la pluie, puis le miroir
+  if (t < CUT.miroir) {
+    const a = CUT.pluie;
     c.save(); camera(c, t, 1.02, 540, 900, 5);
     const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#8e9aa7'); g.addColorStop(.6, '#c9c3ba'); g.addColorStop(1, '#5a5d63');
     c.fillStyle = g; c.fillRect(-200, -200, W + 400, H + 400);
-    // toits de Paris
     c.fillStyle = '#6e7783';
     c.beginPath(); c.moveTo(-200, 1450); const r = rng(12);
     for (let x = -200; x <= 1300; x += 90) { const h = 1180 + r() * 160; c.lineTo(x, h); c.lineTo(x + 30, h - 30 - r() * 40); c.lineTo(x + 45, h - 30 - r() * 40); c.lineTo(x + 60, h); }
@@ -706,88 +701,87 @@ function scene4(c, t) { // 16-19.5 : dehors, puis le miroir
     c.fillStyle = '#4b4f57'; c.fillRect(-200, 1450, W + 400, 600);
     c.fillStyle = 'rgba(220,225,235,.25)'; for (let i = 0; i < 8; i++) c.fillRect(100 + i * 120, 1480 + (i % 3) * 60, 80, 6);
     rain(c, t, 70, 3, .35, 1500, 70);
-    const bob = Math.abs(Math.sin((t - 16) * Math.PI * 2)) * 12;
-    woman(c, { t, x: 540, y: 1000 - bob, s: 1.5, frizz: 0, expr: 'happy', talk: 0, coat: '#9c6b45', sweep: ((t - 16) * .6) % 1, shine: .6, tilt: Math.sin(t * 6.28) * .02 });
-    // gouttes qui glissent sur le bouclier
+    const bob = Math.abs(Math.sin((t - a) * Math.PI * 2)) * 12;
+    woman(c, { t, x: 540, y: 1000 - bob, s: 1.5, frizz: 0, expr: 'happy', talk: 0, coat: '#9c6b45', sweep: ((t - a) * .6) % 1, shine: .6, tilt: Math.sin(t * 6.28) * .02 });
     const pulseA = .18 + .1 * Math.sin(t * 5);
     c.strokeStyle = `rgba(255,220,150,${pulseA})`; c.lineWidth = 5; c.beginPath(); c.ellipse(540, 900 - bob, 330, 380, 0, Math.PI * 1.08, Math.PI * 1.92); c.stroke();
     const r2 = rng(40);
-    for (let i = 0; i < 10; i++) { const ph = ((t - 16) * 1.3 + r2()) % 1, a = Math.PI * (1.15 + r2() * .7), x = 540 + Math.cos(a) * 335, y = 900 - bob + Math.sin(a) * 385;
-      c.fillStyle = `rgba(230,240,255,${.9 * (1 - ph)})`; c.beginPath(); c.arc(x + Math.cos(a) * ph * 60, y - ph * 40 + ph * ph * 120, 6, 0, 7); c.fill(); }
+    for (let i = 0; i < 10; i++) { const ph = ((t - a) * 1.3 + r2()) % 1, an = Math.PI * (1.15 + r2() * .7), x = 540 + Math.cos(an) * 335, y = 900 - bob + Math.sin(an) * 385;
+      c.fillStyle = `rgba(230,240,255,${.9 * (1 - ph)})`; c.beginPath(); c.arc(x + Math.cos(an) * ph * 60, y - ph * 40 + ph * ph * 120, 6, 0, 7); c.fill(); }
     rain(c, t, 70, 4, .5, 1900, 90);
     c.restore();
-    punch(c, t, '☔ JUSQU\'À', 16.05, 17.97, 210, { size: 56, pill: C.choco, border: C.or });
-    const h = Math.round(72 * eOut(seg(t, 16.15, 17.5)));
-    bigCounter(c, t, h, 'H', 380, 16.1, 190);
-    punch(c, t, 'le lendemain', 16.1, 17.97, 1520, { size: 46, color: '#fff', stroke: 'rgba(40,30,25,.8)' });
+    punch(c, t, '☔ ANTI-HUMIDITÉ JUSQU\'À', a + .02, CUT.miroir - .03, 210, { size: 50, pill: C.choco, border: C.or });
+    const h = Math.round(72 * eOut(seg(t, a + .05, 17.25)));
+    bigCounter(c, t, h, 'H', 380, a + .02, 190);
+    punch(c, t, 'le lendemain', a + .05, CUT.miroir - .03, 1520, { size: 46, color: '#fff', stroke: 'rgba(40,30,25,.8)' });
   } else {
-    c.save(); camera(c, t, 1.08 - .04 * seg(t, 18, 19.5), 540, 900, 5);
-    mirrorScene(c, t, { t, frizz: 0, expr: 'happy', talk: talk(t, 18.05, 19.4), sweep: seg(t, 18.1, 19.2), shine: 1, tilt: Math.sin((t - 18) * 3) * .04, look: .3 });
-    const r = rng(17); for (let i = 0; i < 12; i++) { const k = seg(t, 18 + r() * 1.2, 18.5 + r() * 1.2); sparkle(c, 200 + r() * 680, 500 + r() * 900, 10 + r() * 20, Math.sin(k * Math.PI), 0); }
+    const a = CUT.miroir;
+    c.save(); camera(c, t, 1.08 - .04 * seg(t, a, CUT.fier), 540, 900, 5);
+    mirrorScene(c, t, { t, frizz: 0, expr: 'happy', talk: say(t, 'f4'), sweep: seg(t, a + .1, a + 1.2), shine: 1, tilt: Math.sin((t - a) * 3) * .04, look: .3 });
+    const r = rng(17); for (let i = 0; i < 12; i++) { const k = seg(t, a + r() * 1.2, a + .5 + r() * 1.2); sparkle(c, 200 + r() * 680, 500 + r() * 900, 10 + r() * 20, Math.sin(k * Math.PI), 0); }
     c.restore();
-    bubble(c, t, 'fille', 'Attends… donc je panique plus quand il pleut ?!', 18.03, 19.47, 1400);
+    bub(c, t, 'fille', 'Attends… je panique plus quand il pleut ?!', 'f4', 1400);
   }
 }
 
-function scene5(c, t) { // 19.5-21 : le tube fier ; 21-25 : packshot et fin
-  if (t < 21) {
-    c.save(); camera(c, t, 1.0 + .04 * seg(t, 19.5, 21), 540, 900, 3);
-    vanity(c, t, { x: 540, y: 860, s: 1.18, sweep: seg(t, 19.6, 20.6) * 1.4 - .2,
-      face: tubeFace(t, { half: .55, lx: t < 20.1 ? -.6 : 0, bl: .2, br: .9, talk: talk(t, 19.55, 20.85), smirk: true, smile: 1 }) }, { table: 1390 });
+function scene5(c, t) { // le tube fier, packshot, fin
+  if (t < CUT.pack) {
+    const a = CUT.fier;
+    c.save(); camera(c, t, 1.0 + .04 * seg(t, a, CUT.pack), 540, 900, 3);
+    vanity(c, t, { x: 540, y: 860, s: 1.18, sweep: seg(t, a + .1, a + 1.1) * 1.4 - .2,
+      face: tubeFace(t, { half: .55, lx: t < 19.9 ? -.6 : 0, bl: .2, br: .9, talk: say(t, 'm6'), smirk: true, smile: 1 }) }, { table: 1390 });
     c.restore();
-    bubble(c, t, 'mirror', 'Ta coiffure, tes règles. Pas celles de la météo.', 19.52, 20.95, 1450, { tailUp: true });
+    bub(c, t, 'mirror', 'Ta coiffure, tes règles. Pas celles de la météo.', 'm6', 1450, { tailUp: true });
     return;
   }
-  // packshot de marque
-  const end = eIO(seg(t, 23.0, 23.5));
+  const P = CUT.pack, E = CUT.fin;
+  const end = eIO(seg(t, E, E + .5));
   const bg = c.createRadialGradient(540, 950, 60, 540, 950, 1300);
   bg.addColorStop(0, '#e6c99c'); bg.addColorStop(.35, '#a87a4c'); bg.addColorStop(.8, '#3a2015'); bg.addColorStop(1, '#1c0e08');
   c.fillStyle = bg; c.fillRect(0, 0, W, H);
   bokeh(c, t, 12, 41, ['rgba(255,225,170,A)'], .35, 30);
   c.save();
-  const s = lerp(.9 + .04 * seg(t, 21, 23), .42, end);
-  c.translate(540, lerp(1090, 1170, end)); c.rotate(lerp(-.01 + .02 * seg(t, 21, 23), 0, end)); c.scale(s, s); c.translate(-540, -1060);
-  const lookCam = t > 21.15;
-  packshot(c, t, { lx: lookCam ? 0 : .4, ly: .1, talk: talk(t, 21.12, 22.7), smile: 1, wink: t > 22.75 && t < 23.1 ? 1 : 0, bl: .3, br: .3,
-    sweep: seg(t, 21.0, 22.0) * 1.4 - .2, grow: eOut(seg(t, 21.0, 23.0)) });
+  const s = lerp(.9 + .04 * seg(t, P, E), .42, end);
+  c.translate(540, lerp(1090, 1170, end)); c.rotate(lerp(-.01 + .02 * seg(t, P, E), 0, end)); c.scale(s, s); c.translate(-540, -1060);
+  packshot(c, t, { lx: t > P + .15 ? 0 : .4, ly: .1, talk: say(t, 'm7'), smile: 1, wink: t > 24.0 && t < 24.4 ? 1 : 0, bl: .3, br: .3,
+    sweep: seg(t, P, P + 1.0) * 1.4 - .2, grow: eOut(seg(t, P, E)) });
   c.restore();
-  const r = rng(51); for (let i = 0; i < 18; i++) { const k = ((t - 21) * .6 + r()) % 1; sparkle(c, 120 + r() * 840, 500 + r() * 1100, 10 + r() * 22, Math.sin(k * Math.PI) * .9, t); }
-  // éclat doré d'entrée
-  const fl = pulse(t, 21.0, .01, .35);
+  const r = rng(51); for (let i = 0; i < 18; i++) { const k = ((t - P) * .6 + r()) % 1; sparkle(c, 120 + r() * 840, 500 + r() * 1100, 10 + r() * 22, Math.sin(k * Math.PI) * .9, t); }
+  const fl = pulse(t, P, .01, .35);
   if (fl > 0) { c.fillStyle = `rgba(255,236,190,${fl * .85})`; c.fillRect(0, 0, W, H); }
-  if (t < 23.0) {
-    punch(c, t, "LA MÉTÉO N'A PLUS", 21.05, 22.97, 195, { size: 70, color: C.creme });
-    punch(c, t, 'LE DERNIER MOT. ☔✨', 21.25, 22.97, 290, { size: 70, color: C.orClair });
-    bubble(c, t, 'mirror', 'Ton brushing mérite mieux que de finir en nuage.', 21.1, 22.95, 1440, { tailUp: true, tail: 600 });
-    if (t > 22.72 && t < 23.0) { const k = seg(t, 22.72, 23.0); for (let i = 0; i < 9; i++) { const a = i / 9 * 7; c.fillStyle = `rgba(255,250,240,${.8 * (1 - k)})`; c.beginPath(); c.arc(700 + Math.cos(a) * (60 + k * 120), 560 + Math.sin(a) * (40 + k * 90), 26 + k * 20, 0, 7); c.fill(); } }
-  } else {
-    // carton final
-    const k = eBack(seg(t, 23.05, 23.4));
+  if (t < E) {
+    punch(c, t, "LA MÉTÉO N'A PLUS", P + .05, E - .03, 195, { size: 70, color: C.creme });
+    punch(c, t, 'LE DERNIER MOT. ☔✨', P + .25, E - .03, 290, { size: 70, color: C.orClair });
+  }
+  // la réplique finale continue pendant l'arrivée du carton : bulle en haut du carton
+  if (t >= E) {
+    const k = eBack(seg(t, E + .05, E + .4));
     if (logo.complete && logo.naturalWidth) {
       c.save(); c.translate(540, 450); c.scale(k, k); c.shadowColor = 'rgba(0,0,0,.5)'; c.shadowBlur = 50;
       c.drawImage(logo, -250, -250, 500, 500); c.restore();
-      sparkle(c, 540 + 150 * Math.cos(t * 2), 330, 34, seg(t, 23.3, 23.6) * (1 - seg(t, 24.4, 24.9)), t);
+      sparkle(c, 540 + 150 * Math.cos(t * 2), 330, 34, seg(t, E + .3, E + .6) * (1 - seg(t, 24.4, 24.9)), t);
     }
-    const a2 = eOut(seg(t, 23.25, 23.55));
+    const a2 = eOut(seg(t, E + .25, E + .55));
     c.save(); c.globalAlpha = a2; c.textAlign = 'center'; c.textBaseline = 'middle';
     c.font = F(600, 46); c.letterSpacing = '6px'; c.fillStyle = C.creme; c.fillText('MIRROR 72H — GLOSS BY K', 540, 790); c.letterSpacing = '0px';
     c.restore();
-    const a3 = eBack(seg(t, 23.45, 23.75)), beat = 1 + .04 * Math.max(0, Math.sin((t - 23.5) * Math.PI * 4));
+    const a3 = eBack(seg(t, E + .45, E + .75)), beat = 1 + .04 * Math.max(0, Math.sin((t - 23.5) * Math.PI * 4));
     c.save(); c.translate(540, 1530); c.scale(a3 * beat, a3 * beat);
     c.shadowColor = 'rgba(0,0,0,.4)'; c.shadowBlur = 30; c.shadowOffsetY = 10;
     const bgb = c.createLinearGradient(0, -60, 0, 60); bgb.addColorStop(0, '#f2d892'); bgb.addColorStop(1, '#b8893c');
     c.fillStyle = bgb; rrect(c, -420, -62, 840, 124, 62); c.fill(); c.shadowColor = 'transparent';
     c.fillStyle = C.choco; fitFont(c, 'COMMANDE LE TIEN MAINTENANT 👇', 800, 42, 740); c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('COMMANDE LE TIEN MAINTENANT 👇', 0, 4);
     c.restore();
-    c.save(); c.globalAlpha = eOut(seg(t, 23.6, 23.9)); c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.save(); c.globalAlpha = eOut(seg(t, E + .6, E + .9)); c.textAlign = 'center'; c.textBaseline = 'middle';
     c.font = F(700, 52); c.letterSpacing = '2px'; c.lineWidth = 10; c.strokeStyle = 'rgba(28,14,8,.8)'; c.lineJoin = 'round';
     c.strokeText('www.glossbyk.com', 540, 1636); c.fillStyle = '#fff'; c.fillText('www.glossbyk.com', 540, 1636); c.letterSpacing = '0px';
     c.restore();
   }
+  bub(c, t, 'mirror', 'Ton brushing mérite mieux que de finir en nuage.', 'm7', t < E ? 1440 : 1040, { tailUp: true, tail: 600 });
 }
 
 function sceneAt(c, t) {
-  if (t < 5) scene1(c, t); else if (t < 10) scene2(c, t); else if (t < 16) scene3(c, t); else if (t < 19.5) scene4(c, t); else scene5(c, t);
+  if (t < CUT.pan) scene1(c, t); else if (t < CUT.serviette) scene2(c, t); else if (t < CUT.pluie) scene3(c, t); else if (t < CUT.fier) scene4(c, t); else scene5(c, t);
 }
 
 // ---------- transitions ----------
@@ -812,9 +806,9 @@ function draw(t) {
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
   sceneAt(ctx, t);
-  // serviette qui balaie (10 s)
-  if (t > 9.82 && t < 10.18) {
-    const k = eIO(seg(t, 9.82, 10.18)), x = lerp(-1400, 1400, k);
+  // serviette qui balaie
+  if (t > CUT.serviette - .18 && t < CUT.serviette + .18) {
+    const k = eIO(seg(t, CUT.serviette - .18, CUT.serviette + .18)), x = lerp(-1400, 1400, k);
     ctx.save(); ctx.translate(x + 540, 960); ctx.rotate(.12);
     ctx.fillStyle = '#f7f1e8'; ctx.fillRect(-700, -1300, 1400, 2600);
     ctx.strokeStyle = 'rgba(200,185,165,.5)'; ctx.lineWidth = 6; for (let y = -1300; y < 1300; y += 26) { ctx.beginPath(); ctx.moveTo(-700, y); ctx.lineTo(700, y + 8); ctx.stroke(); }
