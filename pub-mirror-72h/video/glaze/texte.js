@@ -76,7 +76,7 @@ function revelation(c, t) {
   c.restore();
   T(c, 'la jelly glaçage · parfum mangue', 540, 860, { size: 40, w: 500, col: CHOCO, blur: 0, a: a3 });
   T(c, 'Brillance miroir · frisottis maîtrisés · sans effet carton', 540, 930, { size: 28, w: 400, col: '#5a3a22', blur: 0, a: a3 });
-  pill(c, 'APRÈS LE SHAMPOING · 3 MINUTES', 540, 1040, { size: 26, ls: 3, a: a4, bg: 'rgba(255,255,255,.75)', col: CHOCO, border: OR3 });
+  pill(c, 'APRÈS LE SHAMPOING · 3 MIN · PUIS RINCER', 540, 1040, { size: 26, ls: 3, a: a4, bg: 'rgba(255,255,255,.75)', col: CHOCO, border: OR3 });
 }
 
 function overlayDuo(t) {
