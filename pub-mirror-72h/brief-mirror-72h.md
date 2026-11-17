@@ -2,11 +2,14 @@
 
 Format : 9:16 vertical · 25 s max · français · TikTok Ads / Reels / Meta Ads
 
-Références visuelles fournies : `references/logo-gloss-by-k.jpg` (logo + slogan) et `references/packshot-mirror-72h.jpg`
-(le tube).
+Références visuelles fournies :
+- `references/tube-reel-mirror-72h.jpg` : **la photo du vrai tube, à utiliser comme référence** pour toute génération.
+- `references/logo-gloss-by-k.jpg` : le logo et le slogan.
+- `references/packshot-ia-ne-pas-utiliser.jpg` : visuel de mise en scène (coupe à champagne). Son étiquette contient
+  des fautes : il sert d'inspiration pour l'ambiance du packshot, **jamais de référence pour le tube**.
 
-> **⚠️ Le site n'a toujours pas pu être lu** : www.glossbyk.com est bloqué par les réglages réseau de cette session.
-> Le packaging et les promesses viennent maintenant de **l'étiquette du tube** sur la photo fournie (section 9).
+> Le site www.glossbyk.com reste bloqué par les réglages réseau de cette session. Le packaging et les promesses
+> viennent de **l'étiquette du vrai tube** ; la marque confirme que toutes les allégations sont justifiées (section 8).
 
 ---
 
@@ -19,29 +22,18 @@ Références visuelles fournies : `references/logo-gloss-by-k.jpg` (logo + sloga
   ne l'ai pas mis dans la vidéo : le logo seul suffit au carton final. Si tu veux le slogan, c'est à toi de décider
   (logo officiel = exception acceptable) ou de le traduire (« Le gloss, c'est la nouvelle norme »).
 
-**Le produit : un tube, pas un flacon**
-- Tube souple de **100 ml**, brun chocolat mat-satiné, bouchon **noir** à clapet, posé tête en bas.
-- « GLOSS » en or, « BY K » en blanc, puis « MIRROR 72h » en grand, blanc.
-- Mentions : anti-frisottis · anti-humidité · leave-in · sans rinçage · **protection thermique jusqu'à 230 °C** ·
-  perles d'amla & biotine.
-- Texture montrée : **gel doré pailleté**, translucide (dans une coupe à champagne en argent). À confirmer : est-ce la
-  vraie texture ou un effet de mise en scène ?
-
-**⚠️ Fautes sur l'étiquette de la photo**
-
-En zoomant, l'étiquette porte trois fautes :
-
-| Sur la photo | Mot attendu |
-|---|---|
-| ANTI-**P**RISOTTIS | ANTI-**F**RISOTTIS |
-| Sans **H**incage | Sans **R**inçage |
-| **MICHO** • PERLES D'AMLA | ? (mot illisible ou inventé) |
-
-Ce genre de fautes est typique d'une **image générée par IA**. Deux cas :
-- **La photo est un rendu IA** : il ne faut pas s'en servir telle quelle comme référence, l'outil vidéo recopierait
-  les fautes. Il faut une photo du vrai tube (même au téléphone, sur fond neutre).
-- **Le vrai tube porte ces fautes** : il faut le savoir avant d'investir dans de la pub, et cadrer les gros plans pour
-  que l'étiquette ne soit pas lisible de près.
+**Le produit : un tube, pas un flacon** (d'après la photo du vrai tube)
+- Tube souple de **100 ml**, finition **brun prune métallisée, nacrée**, qui accroche la lumière ; bouchon **noir** à
+  clapet en bas ; soudure striée en haut.
+- Étiquette rectangulaire légèrement plus foncée sur la face avant :
+  - « GLOSS BY K » en lettres **blanc argenté** ;
+  - « MIRROR 72h » en grand, blanc argenté ;
+  - « ANTI-FRISOTTIS · ANTI-HUMIDITÉ » / « Leave-in · Sans rinçage », un filet fin avec un point, puis
+    « PROTECTION THERMIQUE JUSQU'À 230°C », en blanc ;
+  - « MICRO - PERLES D'AMLA & BIOTINE » en **doré** ;
+  - « 100 ml » en blanc.
+- Texture : le visuel de mise en scène montre un **gel doré pailleté**. À confirmer : si la vraie texture est
+  différente, adapter le plan 3 (application) pour montrer la vraie.
 
 ---
 
@@ -113,9 +105,9 @@ Direction des voix :
 Les outils d'IA vidéo génèrent des plans de 5 à 10 s : il faut **générer plan par plan** puis monter. Trois règles
 sont décisives :
 
-1. **Le tube** : donne une **photo du vrai tube** comme image de référence (image-to-video). Si la photo de référence
-   a des fautes sur l'étiquette, la vidéo les aura aussi (voir section 0). Pour le packshot final, le plus sûr reste
-   une vraie photo du produit, animée en post-production.
+1. **Le tube** : donne `references/tube-reel-mirror-72h.jpg` comme image de référence (image-to-video), jamais le
+   visuel IA. Pour le packshot final, le plus sûr reste une vraie photo studio du tube (fond neutre, bonne lumière),
+   animée en post-production : l'étiquette y reste parfaitement lisible.
 2. **Les voix** : génère-les d'abord (voix de synthèse ou vraies comédiennes), puis fais la synchronisation labiale
    avec un outil de lip-sync. Une voix générée dans la vidéo est rarement synchronisée en français.
 3. **Les textes à l'écran, les sous-titres et le logo** : ajoute-les **au montage** (CapCut, Premiere), le logo à
@@ -129,8 +121,9 @@ soft natural light, French Parisian apartment, premium feminine aesthetic, choco
 champagne tones. Main character: French woman, 25, natural beauty, light makeup, long brown hair,
 expressive face, consistent identity across shots. No text, no subtitles, no logos other than the
 reference product.
-Product (when visible): the exact tube from the reference image — 100 ml soft squeeze tube, satin
-chocolate-brown, black flip cap, "GLOSS" in gold and "BY K" in white, "MIRROR 72h" in white; label
+Product (when visible): the exact tube from the reference image — 100 ml soft squeeze tube, shimmering
+metallic plum-brown finish, black flip cap at the bottom, ridged crimp at the top, rectangular front label
+with "GLOSS BY K" and "MIRROR 72h" in silvery white and a small gold line of text near the bottom; label
 identical to the reference, no distortion.
 ```
 
@@ -148,7 +141,7 @@ Slight handheld shake, quick push-in on her face.
 [COMMON BLOCK] Fast whip-pan to a vanity table. The product tube stands upright on its black cap in warm
 golden light. The tube comes alive in a subtle, elegant Pixar-like way: two small expressive glossy black
 cartoon eyes appear on the empty upper part of the tube, above the "GLOSS BY K" logo, without covering any
-text; one eyebrow raised, a discreet small mouth talking, a little bounce like a shrug, then a wink.
+text, in the plain area between the top crimp and the label; one eyebrow raised, a discreet small mouth talking, a little bounce like a shrug, then a wink.
 Cut to the woman turning around abruptly, mouth open in shock.
 ```
 
@@ -288,7 +281,7 @@ par achat (la conversion).
 - Le texte doit sonner « créatrice », pas marque : pas de majuscules partout, des émojis.
 
 **Meta Ads (Reels, Stories, et fil d'actualité en 4:5)**
-- Texte principal : `Une heure à te lisser les cheveux… et la pluie ruine tout en 2 minutes ? 💀 Mirror 72H, le soin sans rinçage anti-frisottis et anti-humidité. Protection thermique jusqu'à 230°C, aux perles d'amla et à la biotine. À appliquer sur cheveux essorés, avant ton brushing. ☔✨`
+- Texte principal : `Une heure à te lisser les cheveux… et la pluie ruine tout en 2 minutes ? 💀 Mirror 72H, le soin sans rinçage anti-frisottis et anti-humidité. Protection thermique jusqu'à 230°C, aux micro-perles d'amla et à la biotine. À appliquer sur cheveux essorés, avant ton brushing. ☔✨`
 - Titre : `La météo n'a plus le dernier mot`
 - Description : `Mirror 72H — Gloss By K`
 - Bouton : **Acheter**
@@ -297,22 +290,23 @@ par achat (la conversion).
 
 ---
 
-## 8. Les promesses commerciales, vérifiées sur l'étiquette
+## 8. Les promesses commerciales
 
-Le site est toujours inaccessible depuis cette session ; la vérification se fait sur l'étiquette de la photo. Chaque
-promesse doit rester **conforme au produit** et justifiable (règlement européen 655/2013 sur les allégations
-cosmétiques, recommandations de l'ARPP) :
+Toutes les promesses utilisées figurent sur l'étiquette du vrai tube, et **la marque confirme qu'elles sont
+justifiées** (règlement européen 655/2013 sur les allégations cosmétiques, recommandations de l'ARPP). Garder les
+justificatifs (tests de tenue 72 h à l'humidité, test de protection thermique 230 °C) sous la main : Meta et TikTok
+peuvent les demander lors d'une vérification.
 
-| Promesse dans la pub | Sur l'étiquette ? | Reste à faire |
+| Promesse dans la pub | Sur l'étiquette | Statut |
 |---|---|---|
-| Anti-frisottis | ✅ (écrit « ANTI-PRISOTTIS » sur la photo) | Formulation douce dans la voix : « frisottis sous contrôle » |
-| Anti-humidité | ✅ | Rien |
-| Sans rinçage / leave-in | ✅ (écrit « Sans Hincage » sur la photo) | Rien |
-| Protection thermique jusqu'à 230 °C | ✅ | Avoir le test qui la justifie |
-| « Jusqu'à 72 h » | ⚠️ seulement dans le **nom** « Mirror 72h » | Le nom ne suffit pas comme preuve : il faut un test de tenue (en laboratoire, à quel taux d'humidité), sinon retirer le carton « JUSQU'À 72H » et laisser le nom parler |
-| Perles d'amla & biotine | ✅ (pub Meta seulement) | Rien |
-| « Sur cheveux essorés, avant brushing » | ❓ pas sur la face avant | À confirmer avec le mode d'emploi au dos du tube |
-| Gel doré pailleté, une noisette | ❓ | Confirmer la vraie texture et la dose |
+| Anti-frisottis | ✅ « ANTI-FRISOTTIS » | Justifiée |
+| Anti-humidité | ✅ « ANTI-HUMIDITÉ » | Justifiée |
+| Sans rinçage / leave-in | ✅ « Leave-in · Sans rinçage » | Justifiée |
+| Protection thermique jusqu'à 230 °C | ✅ | Justifiée |
+| Jusqu'à 72 h | ✅ nom « Mirror 72h » | Justifiée selon la marque : le carton « ☔ JUSQU'À 72H » est gardé |
+| Micro-perles d'amla & biotine | ✅ | Justifiée (pub Meta) |
+| « Sur cheveux essorés, avant brushing » | Mode d'emploi au dos | À relire une dernière fois sur le tube |
+| Gel doré, une noisette | — | Adapter le plan 3 si la texture ou la dose réelles diffèrent |
 
 À éviter dans tous les cas : « imperméable », « 100 % », « lisse instantanément », « remplace le lisseur »,
 « résultat garanti ». Les pubs restent sur un résultat **après coiffage**, avec quelques frisottis naturels permis
