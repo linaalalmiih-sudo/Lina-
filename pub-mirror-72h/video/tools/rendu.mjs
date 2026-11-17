@@ -35,9 +35,9 @@ async function newPage() {
   await page.evaluate(() => window.pret);
   return page;
 }
-async function frame(page, t, type = 'jpeg') {
+async function frame(page, t, type = 'jpeg', transparent = false) {
   await page.evaluate(t => window.draw(t), t);
-  return page.screenshot({ type, quality: type === 'jpeg' ? 95 : undefined, clip: { x: 0, y: 0, width: Math.round(1080 * dpr), height: Math.round(1920 * dpr) } });
+  return page.screenshot({ type, omitBackground: transparent, quality: type === 'jpeg' ? 95 : undefined, clip: { x: 0, y: 0, width: Math.round(1080 * dpr), height: Math.round(1920 * dpr) } });
 }
 
 if (mode === 'stills') {
@@ -48,6 +48,15 @@ if (mode === 'stills') {
     await (await import('node:fs/promises')).writeFile(join(dir, `t${t.toFixed(2).padStart(5, '0')}.png`), b);
   }
   console.log('images dans', dir);
+} else if (mode === 'calque') { // images PNG transparentes, pour poser du texte sur une vraie vidéo
+  const dir = resolve(opt('dir') || 'out/calque'); await rm(dir, { recursive: true, force: true }); await mkdir(dir, { recursive: true });
+  const total = Math.round(25 * fps); let next = 0;
+  const { writeFile } = await import('node:fs/promises');
+  await Promise.all(Array.from({ length: workers }, async () => {
+    const page = await newPage();
+    while (next < total) { const i = next++; await writeFile(join(dir, `f${String(i).padStart(5, '0')}.png`), await frame(page, i / fps, 'png', true)); }
+  }));
+  console.log('calque :', dir);
 } else if (mode === 'video') {
   const out = resolve(opt('out') || 'out/muet.mp4'), crf = opt('crf') || '16';
   const tmp = out + '.frames'; await rm(tmp, { recursive: true, force: true }); await mkdir(tmp, { recursive: true });
