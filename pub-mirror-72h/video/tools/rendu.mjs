@@ -1,6 +1,6 @@
 // Rendu de la scène avec Chromium (Playwright).
 //   node tools/rendu.mjs stills --times 0.5,3,6 --dpr 0.5 --dir out/essai
-//   node tools/rendu.mjs video --dpr 2 --fps 30 --workers 4 --out out/muet.mp4 [--crf 16]
+//   node tools/rendu.mjs video --dpr 2 --fps 30 --workers 4 --out out/muet.mp4 [--crf 16] [--scene luxe/index.html] [--query st=0]
 import { createServer } from 'node:http';
 import { readFile, mkdir, rm } from 'node:fs/promises';
 import { extname, join, resolve, dirname } from 'node:path';
@@ -23,13 +23,14 @@ const server = createServer(async (req, res) => {
   catch { res.writeHead(404); res.end(); }
 });
 await new Promise(r => server.listen(0, '127.0.0.1', r));
-const url = `http://127.0.0.1:${server.address().port}/scene/index.html?dpr=${dpr}`;
+const scenePath = opt('scene') || 'scene/index.html', extra = opt('query') ? '&' + opt('query') : '';
+const url = `http://127.0.0.1:${server.address().port}/${scenePath}?dpr=${dpr}${extra}`;
 
 const browser = await chromium.launch({ args: ['--disable-web-security', '--font-render-hinting=none'] });
 async function newPage() {
   const page = await browser.newPage({ viewport: { width: Math.round(1080 * dpr), height: Math.round(1920 * dpr) }, deviceScaleFactor: 1 });
   page.on('pageerror', e => console.error('ERREUR PAGE', e.message));
-  await page.goto(url.replace(`dpr=${dpr}`, `dpr=${dpr}`));
+  await page.goto(url);
   await page.addStyleTag({ content: `canvas{width:${1080 * dpr}px!important;height:${1920 * dpr}px!important}` });
   await page.evaluate(() => window.pret);
   return page;
