@@ -50,7 +50,7 @@ if (mode === 'stills') {
   console.log('images dans', dir);
 } else if (mode === 'calque') { // images PNG transparentes, pour poser du texte sur une vraie vidéo
   const dir = resolve(opt('dir') || 'out/calque'); await rm(dir, { recursive: true, force: true }); await mkdir(dir, { recursive: true });
-  const total = Math.round(25 * fps); let next = 0;
+  const total = Math.round(parseFloat(opt('duree') || '25') * fps); let next = 0;
   const { writeFile } = await import('node:fs/promises');
   await Promise.all(Array.from({ length: workers }, async () => {
     const page = await newPage();
@@ -60,7 +60,7 @@ if (mode === 'stills') {
 } else if (mode === 'video') {
   const out = resolve(opt('out') || 'out/muet.mp4'), crf = opt('crf') || '16';
   const tmp = out + '.frames'; await rm(tmp, { recursive: true, force: true }); await mkdir(tmp, { recursive: true });
-  const total = Math.round(25 * fps); let next = 0, done = 0; const t0 = Date.now();
+  const total = Math.round(parseFloat(opt('duree') || '25') * fps); let next = 0, done = 0; const t0 = Date.now();
   const { writeFile } = await import('node:fs/promises');
   await Promise.all(Array.from({ length: workers }, async () => {
     const page = await newPage();

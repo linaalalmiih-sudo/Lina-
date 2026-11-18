@@ -119,7 +119,7 @@ function bubble(c, t, who, text, t0, t1, y, opts = {}) {
   if (mirror) { c.strokeStyle = C.or; c.lineWidth = 4; rrect(c, bx, y, bw, bh, 38); c.stroke(); }
   // étiquette
   if (mirror) {
-    c.font = F(800, 24); const lab = opts.off ? 'MIRROR 72H · VOIX OFF' : 'MIRROR 72H';
+    c.font = F(800, 24); const lab = opts.label || (opts.off ? 'MIRROR 72H · VOIX OFF' : 'MIRROR 72H');
     const lw = c.measureText(lab).width + 36;
     c.fillStyle = C.or; rrect(c, bx + 34, y - 22, lw, 44, 22); c.fill();
     c.fillStyle = C.choco; c.textAlign = 'left'; c.textBaseline = 'middle'; c.fillText(lab, bx + 52, y + 1);
