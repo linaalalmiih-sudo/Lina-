@@ -98,13 +98,13 @@ function bubble(c, t, who, text, t0, t1, y, opts = {}) {
   const size = opts.size || 50;
   c.save(); c.font = F(800, size);
   text = text.replace(/ ([?!:;])/g, '\u00A0$1');
-  const lines = wrap(c, text, 820);
+  const lines = wrap(c, text, opts.maxW || 820);
   const lh = size * 1.22, padX = 44, padY = 30;
   const tw = Math.max(...lines.map(l => c.measureText(l).width));
   const bw = tw + padX * 2, bh = lines.length * lh + padY * 2 - (lh - size);
   const bx = (opts.x || 540) - bw / 2;
   c.globalAlpha = fade;
-  c.translate(540, y + bh / 2); c.scale(.6 + .4 * a, .6 + .4 * a); c.translate(-540, -(y + bh / 2));
+  const ax = opts.x || 540; c.translate(ax, y + bh / 2); c.scale(.6 + .4 * a, .6 + .4 * a); c.translate(-ax, -(y + bh / 2));
   const mirror = who === 'mirror';
   c.shadowColor = 'rgba(0,0,0,.35)'; c.shadowBlur = 30; c.shadowOffsetY = 10;
   c.fillStyle = mirror ? C.choco : '#ffffff';
