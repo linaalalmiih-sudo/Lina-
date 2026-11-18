@@ -5,7 +5,12 @@ Vidéo : `elle-vs-elle-1080p.mp4` (ou `-4k.mp4`). 35 s, 9:16, **sans aucun son**
 ## Le principe
 
 C'est un écran partagé avec la même fille des deux côtés : à gauche **sans le Duo**, à droite **avec le Duo**. Au centre,
-un compteur avance : 0H → 1H (la pluie commence) → 6H (humidité 90 %) → 24H → 72H*. À gauche, les cheveux gonflent
+un compteur avance, et le décor change à chaque étape (le même des deux côtés) :
+- **0H** : à la maison, lumière du matin, brushing tout juste fait ;
+- **1H** : dehors, il pleut ;
+- **6H** : au bureau, la pluie contre la vitre, humidité 90 % ;
+- **24H** : le soir en ville, sous la pluie ;
+- **72H*** : trois jours plus tard, balade dans un parc sous la bruine. À gauche, les cheveux gonflent
 de plus en plus (*pouf* à 19 s). À droite, ils restent lisses et brillants.
 
 À 27 s, révélation : Mirror 72H et Glaze & Gaze sur la coiffeuse, « LE DUO ICONIC », et les 2 étapes :
