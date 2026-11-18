@@ -1,0 +1,36 @@
+1
+00:00:05,450 --> 00:00:07,853
+Bonjour. Je suis votre assistante virtuelle.
+
+2
+00:00:07,853 --> 00:00:09,383
+Comment puis-je vous aider ?
+
+3
+00:00:10,150 --> 00:00:13,229
+Bonsoir. Vous auriez un rendez-vous cette semaine ?
+
+4
+00:00:13,400 --> 00:00:15,234
+Jeudi à 10 h, cela vous convient ?
+
+5
+00:00:15,400 --> 00:00:15,827
+Parfait.
+
+6
+00:00:16,000 --> 00:00:18,466
+C'est réservé. Je vous envoie la confirmation.
+
+7
+00:00:24,000 --> 00:00:24,673
+NEXORA AI.
+
+8
+00:00:24,673 --> 00:00:27,027
+L'intelligence travaille avec vous.
+
+9
+00:00:27,450 --> 00:00:29,541
+Découvrez votre futur assistant IA.
+
