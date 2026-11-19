@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Mirror 72H — Fiche produit</title>
+<link rel="stylesheet" href="../video/fonts/fonts-local.css">
+<style>
+  :root {
+    --choco: #2b1810; --choco2: #4a2c1e; --or: #b8893c; --or-clair: #e6c98d; --creme: #fbf6ef; --sable: #f3e9dc; --texte: #3b2a20; --doux: #7a6556;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1024px; height: 1536px; background: var(--creme); overflow: hidden; }
+  body { font-family: Montserrat, sans-serif; color: var(--texte); position: relative;
+    background: radial-gradient(1200px 700px at 85% 0%, #f6ecdf 0%, var(--creme) 55%), var(--creme); }
+  .serif { font-family: 'Playfair Display', serif; }
+
+  /* en-tête */
+  header { height: 92px; display: flex; align-items: center; justify-content: center; gap: 28px; }
+  header .filet { width: 230px; height: 1px; background: linear-gradient(90deg, transparent, var(--or)); }
+  header .filet.d { background: linear-gradient(270deg, transparent, var(--or)); }
+  header .marque { font-family: 'Playfair Display', serif; font-weight: 500; font-size: 34px; letter-spacing: 10px; color: var(--choco); padding-left: 10px; }
+
+  /* héros */
+  .hero { display: grid; grid-template-columns: 430px 1fr; gap: 44px; padding: 4px 56px 0; height: 540px; }
+  .photo { position: relative; border-radius: 26px; overflow: visible; }
+  .photo .cadre { position: absolute; inset: 0; border-radius: 26px; overflow: hidden; box-shadow: 0 24px 60px rgba(43,24,16,.28); }
+  .photo .cadre img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
+  .photo .brosse { position: absolute; left: -26px; bottom: -22px; height: 250px; transform: rotate(-16deg); filter: drop-shadow(0 16px 22px rgba(43,24,16,.35)); }
+  .photo .pastille { position: absolute; right: -20px; top: 26px; background: var(--choco); color: var(--or-clair); border-radius: 50%;
+    width: 122px; height: 122px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 10px 24px rgba(0,0,0,.25); border: 2px solid var(--or); }
+  .pastille b { font-size: 36px; font-weight: 800; line-height: 1; letter-spacing: 1px; }
+  .pastille span { font-size: 11px; font-weight: 600; letter-spacing: 2px; margin-top: 6px; }
+  .titre { padding-top: 14px; }
+  .surtitre { font-size: 13px; font-weight: 600; letter-spacing: 5px; color: var(--or); }
+  h1 { font-family: 'Playfair Display', serif; font-weight: 500; font-size: 82px; line-height: 1; color: var(--choco); margin: 10px 0 16px; letter-spacing: 1px; }
+  .promesse { font-family: 'Playfair Display', serif; font-style: italic; font-size: 27px; line-height: 1.3; color: var(--choco2); padding-left: 18px; border-left: 3px solid var(--or); margin-bottom: 20px; }
+  .intro { font-size: 17px; line-height: 1.62; color: var(--texte); }
+  .intro b { color: var(--choco); }
+  .formule { margin-top: 18px; }
+  .formule p { font-size: 12px; font-weight: 700; letter-spacing: 4px; color: var(--doux); margin-bottom: 12px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 9px; }
+  .chip { font-size: 14px; font-weight: 500; padding: 8px 15px; border-radius: 30px; background: #fff; border: 1px solid #e3d2bb; color: var(--choco2); }
+
+  /* titres de section */
+  .section-titre { display: flex; align-items: center; gap: 20px; margin: 0 56px 12px; }
+  .section-titre h2 { font-family: 'Playfair Display', serif; font-weight: 500; font-size: 30px; letter-spacing: 3px; color: var(--choco); white-space: nowrap; }
+  .section-titre .l { flex: 1; height: 1px; background: linear-gradient(90deg, var(--or), transparent); }
+
+  /* bienfaits */
+  .bienfaits { margin-top: 32px; }
+  .grille5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 0 56px; }
+  .carte { background: #fff; border-radius: 18px; padding: 16px 10px 14px; text-align: center; box-shadow: 0 6px 18px rgba(43,24,16,.07); border: 1px solid #efe3d3; }
+  .carte svg { width: 46px; height: 46px; stroke: var(--or); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .carte h3 { font-size: 14px; font-weight: 700; color: var(--choco); margin: 10px 0 6px; line-height: 1.25; }
+  .carte p { font-size: 12.5px; line-height: 1.4; color: var(--doux); }
+  .badges { display: flex; justify-content: center; gap: 14px; margin: 12px 56px 0; }
+  .badge { display: flex; align-items: center; gap: 10px; padding: 9px 20px; border-radius: 30px; background: var(--choco); color: var(--or-clair); font-size: 13.5px; font-weight: 600; letter-spacing: .5px; }
+  .badge svg { width: 20px; height: 20px; stroke: var(--or-clair); fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* étapes */
+  .etapes { margin-top: 26px; }
+  .grille4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 0 56px; background: #fff; border-radius: 22px; border: 1px solid #efe3d3; box-shadow: 0 6px 18px rgba(43,24,16,.07); overflow: hidden; }
+  .etape { padding: 16px 16px 16px; text-align: center; position: relative; }
+  .etape + .etape { border-left: 1px solid #f0e6d8; }
+  .num { width: 34px; height: 34px; border-radius: 50%; background: var(--choco); color: var(--or-clair); font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
+  .etape svg { width: 54px; height: 54px; stroke: var(--choco2); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .etape h3 { font-size: 15px; font-weight: 700; color: var(--choco); margin: 8px 0 6px; }
+  .etape p { font-size: 13px; line-height: 1.45; color: var(--doux); }
+
+  /* conseils */
+  .conseils { display: grid; grid-template-columns: 1.55fr 1fr; gap: 14px; margin: 18px 56px 0; }
+  .attention { background: #f6e6e0; border-radius: 20px; padding: 16px 22px; border: 1px solid #ecd0c6; display: grid; grid-template-columns: 44px 1fr; gap: 14px; }
+  .attention svg { width: 40px; height: 40px; stroke: #9a4a35; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .attention h3 { font-size: 15px; font-weight: 800; letter-spacing: 1px; color: #7a3424; margin-bottom: 5px; }
+  .attention p { font-size: 13px; line-height: 1.5; color: #5d3a2e; }
+  .secret { background: var(--choco); border-radius: 20px; padding: 16px 22px; color: var(--sable); }
+  .secret h3 { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 500; font-size: 24px; color: var(--or-clair); margin-bottom: 6px; }
+  .secret p { font-size: 13px; line-height: 1.5; }
+
+  .bandeau { margin: 14px 56px 0; border-radius: 20px; padding: 14px 30px; text-align: center;
+    background: linear-gradient(100deg, #c99a4e, #ecd39c 45%, #c3913f); color: var(--choco); box-shadow: 0 8px 20px rgba(150,105,40,.25); }
+  .bandeau h3 { font-family: 'Playfair Display', serif; font-weight: 500; font-size: 22px; letter-spacing: 3px; margin-bottom: 5px; }
+  .bandeau p { font-size: 14px; line-height: 1.5; font-weight: 500; }
+
+  footer { position: absolute; left: 0; right: 0; bottom: 18px; text-align: center; }
+  footer .site { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 6px; color: var(--choco); }
+  footer .note { font-size: 10.5px; color: var(--doux); margin-top: 6px; }
+</style>
+</head>
+<body>
+<header><span class="filet"></span><span class="marque">GLOSS BY K</span><span class="filet d"></span></header>
+
+<section class="hero">
+  <div class="photo">
+    <div class="cadre"><img src="img/packshot.jpg" alt="Mirror 72H"></div>
+    <img class="brosse" src="img/brosse.png" alt="Brosse dorée Gloss By K">
+    <div class="pastille"><b>72H</b><span>ANTI-HUMIDITÉ*</span></div>
+  </div>
+  <div class="titre">
+    <div class="surtitre">SOIN SANS RINÇAGE · 100 ML</div>
+    <h1>Mirror 72H</h1>
+    <div class="promesse">Le voile protecteur<br>anti-frisottis et anti-humidité</div>
+    <p class="intro"><b>Mirror 72H</b> protège, discipline et sublime les cheveux. Il aide à lutter contre les frisottis,
+      limite les effets de l'humidité et prolonge la tenue du coiffage <b>jusqu'à 72 heures*</b>.</p>
+    <div class="formule">
+      <p>LA FORMULE</p>
+      <div class="chips">
+        <span class="chip">Micro-perles d'amla</span><span class="chip">Biotine</span><span class="chip">Protéines de soie</span>
+        <span class="chip">Pépins de raisin</span><span class="chip">Provitamine B5</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bienfaits">
+  <div class="section-titre"><h2>LES BIENFAITS</h2><span class="l"></span></div>
+  <div class="grille5">
+    <div class="carte"><svg viewBox="0 0 48 48"><path d="M10 40c4-8-4-14 0-22s-2-12 2-14"/><path d="M20 42c4-9-4-15 0-24s-2-12 2-14"/><path d="M30 42c4-9-4-15 0-24s-2-12 2-14"/><path d="M40 40c3-7-3-12 0-19"/></svg>
+      <h3>Anti-frisottis</h3><p>Aide à contrôler les frisottis</p></div>
+    <div class="carte"><svg viewBox="0 0 48 48"><path d="M24 4l16 6v12c0 11-7 18-16 22C15 40 8 33 8 22V10z"/><path d="M24 15c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/></svg>
+      <h3>Anti-humidité</h3><p>Protège jusqu'à 72 heures*</p></div>
+    <div class="carte"><svg viewBox="0 0 48 48"><path d="M20 28V8a4 4 0 0 1 8 0v20a8 8 0 1 1-8 0z"/><circle cx="24" cy="34" r="3.5"/><path d="M24 30V16"/><path d="M33 12h5M33 18h5M33 24h5"/></svg>
+      <h3>Thermo-protecteur</h3><p>Jusqu'à 230 °C</p></div>
+    <div class="carte"><svg viewBox="0 0 48 48"><path d="M24 6l3 10 10 3-10 3-3 10-3-10-10-3 10-3z"/><path d="M38 30l1.5 4.5L44 36l-4.5 1.5L38 42l-1.5-4.5L32 36l4.5-1.5z"/><path d="M10 32l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/></svg>
+      <h3>Coiffage facile</h3><p>Brushing, boucles, séchage naturel</p></div>
+    <div class="carte"><svg viewBox="0 0 48 48"><path d="M24 6c8 10 13 17 13 23a13 13 0 0 1-26 0c0-6 5-13 13-23z"/><path d="M18 30a6 6 0 0 0 6 6"/></svg>
+      <h3>Brillance</h3><p>Douceur et discipline</p></div>
+  </div>
+  <div class="badges">
+    <span class="badge"><svg viewBox="0 0 24 24"><path d="M5 19C5 10 11 5 20 4c0 9-5 15-14 15z"/><path d="M5 19l8-8"/></svg>Sans silicone</span>
+    <span class="badge"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>Vegan</span>
+    <span class="badge"><svg viewBox="0 0 24 24"><path d="M9 9V4a1.5 1.5 0 0 1 3 0v5"/><path d="M13 9V5a1.5 1.5 0 0 1 3 0v5"/><ellipse cx="12" cy="15" rx="6" ry="5"/><circle cx="10" cy="14" r=".6"/></svg>Non testé sur les animaux</span>
+  </div>
+</section>
+
+<section class="etapes">
+  <div class="section-titre"><h2>LE RITUEL EN 4 ÉTAPES</h2><span class="l"></span></div>
+  <div class="grille4">
+    <div class="etape"><div class="num">1</div>
+      <svg viewBox="0 0 56 56"><circle cx="28" cy="32" r="11"/><path d="M14 26c0-10 7-16 14-16s14 6 14 16c-4-3-9-5-14-5s-10 2-14 5z"/><path d="M24 33a1 1 0 0 0 0 0M32 33a1 1 0 0 0 0 0"/><path d="M25 38c2 1.5 4 1.5 6 0"/></svg>
+      <h3>Préparer</h3><p>Lave tes cheveux et applique un masque hydratant.</p></div>
+    <div class="etape"><div class="num">2</div>
+      <svg viewBox="0 0 56 56"><path d="M28 8c9 11 14 19 14 25a14 14 0 0 1-28 0c0-6 5-14 14-25z"/><path d="M21 35a7 7 0 0 0 7 7"/></svg>
+      <h3>Appliquer</h3><p>Sur cheveux propres et essorés, une petite quantité.</p></div>
+    <div class="etape"><div class="num">3</div>
+      <svg viewBox="0 0 56 56"><path d="M14 10c3 12-3 20 0 36"/><path d="M22 10c3 12-3 20 0 36"/><path d="M30 10c3 12-3 20 0 36"/><path d="M38 10c3 12-3 20 0 36"/><path d="M10 22h36"/></svg>
+      <h3>Répartir</h3><p>Des longueurs aux pointes, de façon uniforme.</p></div>
+    <div class="etape"><div class="num">4</div>
+      <svg viewBox="0 0 56 56"><path d="M8 20a10 10 0 0 1 10-10h18v20H18A10 10 0 0 1 8 20z"/><path d="M36 13h8M36 20h10M36 27h8"/><path d="M22 30l4 18h6l-3-18"/></svg>
+      <h3>Coiffer</h3><p>Brushing, diffuseur ou séchage naturel.</p></div>
+  </div>
+</section>
+
+<section class="conseils">
+  <div class="attention">
+    <svg viewBox="0 0 40 40"><path d="M20 5L37 34H3z"/><path d="M20 16v8"/><circle cx="20" cy="29" r=".8"/></svg>
+    <div><h3>LA BONNE DOSE</h3>
+      <p>Mirror 72H dépose un voile protecteur sur la fibre. Trop de produit peut donner un toucher sec ou rigide :
+        commence par une petite quantité, ajoute-en seulement si besoin.</p></div>
+  </div>
+  <div class="secret"><h3>Le secret</h3><p>Une application légère et uniforme : tous les bienfaits, sans surcharger les cheveux.</p></div>
+</section>
+
+<div class="bandeau"><h3>LE CONSEIL GLOSS BY K</h3>
+  <p>Hydrate bien tes cheveux avant l'application : Mirror 72H vient ensuite sceller ton coiffage et le protéger de l'humidité.</p></div>
+
+<footer><div class="site">GLOSSBYK.COM</div><div class="note">*Selon le type de cheveux, le coiffage et la météo.</div></footer>
+</body>
+</html>
