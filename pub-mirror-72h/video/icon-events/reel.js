@@ -6,14 +6,19 @@ const RL_DUREE = 15;
 // palette du logo ICON Events : chocolat profond, crème, or champagne
 const ROSE = '#d0ab81', ROSE2 = '#b8915f', CHAMP = '#f4ece2', NOIR = '#2e1109';
 const logoImg = new Image(); logoImg.src = '../assets/logo-icon.png';
-const PHR = {}, LISTE = ['yacht22', 'yacht21', 'babyshower', 'cadeaux'];
+const PHR = {}, LISTE = ['yacht22', 'yacht21', 'babyshower', 'cadeaux', 'pilates'];
 
 // plans photo : [photo, début, fin, centre vertical]
 const SEQ = [
-  ['yacht22', 0, 1.5, .45], ['babyshower', 1.5, 1.875, .5], ['yacht21', 1.875, 2.25, .45], ['cadeaux', 2.25, 2.625, .55], ['yacht22', 2.625, 3.0, .4],
+  ['yacht22', 0, 1.5, .45],
+  ['babyshower', 1.5, 1.875, .5], ['yacht21', 1.875, 2.25, .45], ['cadeaux', 2.25, 2.625, .55], ['pilates', 2.625, 3.0, .5],
+  ['babyshower', 3.0, 4.0, .5],
   ['babyshower', 4.0, 5.25, .5], ['cadeaux', 5.25, 6.5, .55],
   ['yacht22', 6.5, 7.75, .42], ['yacht21', 7.75, 9.0, .45],
-  ['yacht21', 12.5, 12.75, .45], ['babyshower', 12.75, 13.0, .5], ['cadeaux', 13.0, 13.25, .55], ['yacht22', 13.25, 13.5, .42],
+  ['pilates', 9.0, 11.0, .5],
+  ['yacht21', 11.0, 11.375, .45], ['cadeaux', 11.375, 11.75, .55], ['yacht22', 11.75, 12.125, .42], ['babyshower', 12.125, 12.5, .5],
+  ['cadeaux', 12.5, 13.5, .55],
+  ['yacht22', 13.5, 15.1, .45],
 ];
 
 function photo(c, t) {
@@ -72,7 +77,9 @@ function rlDraw(t) {
     if (t >= 9 && t < 11) fondClair(c, t, '#f6ede2', '#dcc3a2');
     else fondClair(c, t);
   }
-  if (enPhoto) { const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, 'rgba(0,0,0,.25)'); g.addColorStop(.45, 'rgba(0,0,0,0)'); g.addColorStop(.75, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.35)'); c.fillStyle = g; c.fillRect(0, 0, W, H); }
+  const voile = (t >= 3 && t < 4) || t >= 13.5 ? 'rgba(244,236,226,.72)' : (t >= 11 && t < 12.5) ? 'rgba(46,17,9,.45)' : null;
+  if (enPhoto && voile) { c.fillStyle = voile; c.fillRect(-40, -40, W + 80, H + 80); }
+  if (enPhoto && !voile) { const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, 'rgba(0,0,0,.25)'); g.addColorStop(.45, 'rgba(0,0,0,0)'); g.addColorStop(.75, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.35)'); c.fillStyle = g; c.fillRect(0, 0, W, H); }
   c.restore();
 
   // 1. accroche
@@ -94,18 +101,18 @@ function rlDraw(t) {
   claque(c, t, 'BIRTHDAY 🎂', 6.65, 8.98, 440, { size: 104, pastille: ROSE, col: NOIR, ls: 4 });
   petitTxt(c, t, 'YACHT PARTIES · 18TH · 21ST', 6.9, 8.98, 1480, { size: 34 });
   petitTxt(c, t, 'SURPRISES · MILESTONES', 7.1, 8.98, 1540, { size: 34 });
-  claque(c, t, 'ICON', 9.0, 10.98, 640, { size: 170, col: NOIR, ombre: 'transparent', ls: 8 });
-  claque(c, t, 'SHOW ✨', 9.15, 10.98, 800, { size: 130, pastille: NOIR, col: CHAMP, ls: 6 });
-  ['BRAND LAUNCHES', 'POP-UPS', 'CORPORATE', 'VIP NIGHTS'].forEach((m, i) => claque(c, t, m, 9.5 + i * .25, 10.98, 1000 + i * 95, { size: 58, col: NOIR, ombre: 'transparent' }));
+  claque(c, t, 'ICON', 9.0, 10.98, 300, { size: 150, ls: 6 });
+  claque(c, t, 'SHOW ✨', 9.15, 10.98, 440, { size: 104, pastille: NOIR, col: CHAMP, ls: 6 });
+  petitTxt(c, t, 'BRAND LAUNCHES · POP-UPS', 9.4, 10.98, 1480, { size: 34 });
+  petitTxt(c, t, 'CORPORATE · YACHT EXPERIENCES', 9.6, 10.98, 1540, { size: 34 });
   // 4. 7/7
-  claque(c, t, '7/7', 11.0, 12.48, 760, { size: 320, col: NOIR, ombre: 'transparent' });
+  claque(c, t, '7/7', 11.0, 12.48, 760, { size: 320 });
   claque(c, t, "WE'RE HERE EVERY DAY", 11.3, 12.48, 1000, { size: 60, pastille: ROSE, col: NOIR });
   claque(c, t, 'FULLY BESPOKE ✨', 11.6, 12.48, 1120, { size: 60, pastille: NOIR, col: CHAMP });
   // 5. fin
   claque(c, t, 'YOUR EVENT.', 12.5, 13.48, 780, { size: 110 });
   claque(c, t, 'OUR SIGNATURE.', 12.75, 13.48, 910, { size: 100, pastille: NOIR, col: CHAMP });
   if (t >= 13.5) {
-    fondClair(c, t);
     logoRond(c, 540, 640, 230, eBack(seg(t, 13.5, 13.8)));
     petitTxt(c, t, 'NOT JUST AN EVENT. AN EXPERIENCE.', 13.7, 15, 960, { size: 32, col: NOIR, ombre: false, ls: 4 });
     claque(c, t, 'DM US TO BOOK 💌', 13.9, 15.1, 1120, { size: 72, pastille: NOIR, col: CHAMP });
