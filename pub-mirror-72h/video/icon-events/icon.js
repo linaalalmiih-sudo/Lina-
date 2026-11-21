@@ -3,6 +3,8 @@
    Motion design luxe : chocolat, or, crème, silhouette de Dubaï, icônes dorées qui se dessinent. */
 'use strict';
 const IC_DUREE = 23;
+const PH = {};
+const PHOTOS = ['babyshower', 'cadeaux', 'yacht22', 'yacht21'];
 const CH = '#2a140d', CH2 = '#140906', GOLD = '#c9a45c', GOLD2 = '#f0d9a2', CREAM = '#f3e6d3';
 
 function fond(c, t) {
@@ -78,9 +80,32 @@ function rangeeIcones(c, t, t0, noms, y) {
 }
 
 // une carte « concept »
-function concept(c, t, a, b, num, titre, ligne1, ligne2, icones) {
+function photoFond(c, t, a, b, photos, al) {
+  const n = photos.length, d = (b - a) / n, i = clamp(Math.floor((t - a) / d), 0, n - 1), im = PH[photos[i]];
+  if (!im) return;
+  const u = seg(t, a + i * d, a + (i + 1) * d), z = 1.0 + .08 * u, s = Math.max(W / im.width, H / im.height) * z;
+  c.save(); c.globalAlpha = al; c.drawImage(im, 540 - im.width * s / 2, 960 - im.height * s / 2 + (i % 2 ? -20 : 20) * u, im.width * s, im.height * s);
+  const gh = c.createLinearGradient(0, 0, 0, 820); gh.addColorStop(0, 'rgba(20,9,6,.85)'); gh.addColorStop(1, 'rgba(20,9,6,0)'); c.fillStyle = gh; c.fillRect(0, 0, W, 820);
+  const gb = c.createLinearGradient(0, 1180, 0, H); gb.addColorStop(0, 'rgba(20,9,6,0)'); gb.addColorStop(.55, 'rgba(20,9,6,.82)'); gb.addColorStop(1, 'rgba(20,9,6,.95)'); c.fillStyle = gb; c.fillRect(0, 1180, W, 740);
+  // fin filet doré autour de la photo
+  c.strokeStyle = 'rgba(201,164,92,.7)'; c.lineWidth = 3; c.strokeRect(40, 40, W - 80, H - 80);
+  const f = pulse(t, a + i * d, .02, .25); if (f && i) { c.fillStyle = `rgba(255,236,200,${f * .5})`; c.fillRect(0, 0, W, H); }
+  c.restore();
+}
+function concept(c, t, a, b, num, titre, ligne1, ligne2, icones, photos) {
   if (t < a - .3 || t > b + .3) return;
   const al = app(t, a, b, .3);
+  if (photos) {
+    photoFond(c, t, a, b, photos, al);
+    c.save(); c.globalAlpha = al;
+    txt(c, num, 540, 190, { size: 30, w: 600, ls: 14, col: GOLD, a: mont(t, a) });
+    const k = mont(t, a + .1, .6);
+    txt(c, titre, 540, 290, { size: 96, w: 500, serif: true, ls: lerp(30, 8, k), grad: true, a: k, glow: 30 });
+    c.strokeStyle = GOLD; c.lineWidth = 2.5; const lw = 380 * mont(t, a + .4, .6); c.beginPath(); c.moveTo(540 - lw / 2, 375); c.lineTo(540 + lw / 2, 375); c.stroke();
+    txt(c, ligne1, 540, 1470, { size: 46, w: 600, a: mont(t, a + .6) });
+    txt(c, ligne2, 540, 1545, { size: 28, w: 500, ls: 4, col: GOLD2, a: mont(t, a + .9) });
+    c.restore(); return;
+  }
   c.save(); c.globalAlpha = al;
   txt(c, num, 540, 470, { size: 30, w: 600, ls: 14, col: GOLD, a: mont(t, a) });
   // titre qui s'ouvre en lettres espacées
@@ -114,8 +139,8 @@ function icDraw(t) {
     txt(c, 'An experience.', 540, 1255, { size: 50, serif: true, style: 'italic', w: 500, grad: true, a: al * mont(t, 4.0), glow: 20 });
   }
   // 3. les trois concepts
-  concept(c, t, 5.3, 9.0, '01', 'ICON EVENTS', 'Baby showers · Engagements', 'BRIDAL SHOWERS · PRIVATE CELEBRATIONS', ['poussette', 'bagues', 'coupes']);
-  concept(c, t, 9.2, 12.9, '02', 'ICON BIRTHDAY', 'Birthdays they will never forget', 'KIDS · 18TH · 21ST · MILESTONES · SURPRISES', ['ballon', 'gateau', 'cadeau']);
+  concept(c, t, 5.3, 9.0, '01', 'ICON EVENTS', 'Baby showers · Engagements', 'BRIDAL SHOWERS · PRIVATE CELEBRATIONS', ['poussette', 'bagues', 'coupes'], ['babyshower', 'cadeaux']);
+  concept(c, t, 9.2, 12.9, '02', 'ICON BIRTHDAY', 'Birthdays they will never forget', 'YACHTS · 18TH · 21ST · MILESTONES · SURPRISES', ['ballon', 'gateau', 'cadeau'], ['yacht22', 'yacht21']);
   concept(c, t, 13.1, 16.8, '03', 'ICON SHOW', 'For brands & businesses', 'LAUNCHES · POP-UPS · CORPORATE · VIP NIGHTS', ['projecteur', 'micro', 'etoile']);
   // 4. le service
   if (t > 16.9 && t < 20.3) {
@@ -150,4 +175,8 @@ function icDraw(t) {
 
 window.DUREE = IC_DUREE;
 window.draw = icDraw;
-window.pret = (async () => { await window.pret; await document.fonts.load('italic 500 40px "Playfair Display"', 'A'); icDraw(0); return true; })();
+window.pret = (async () => {
+  await window.pret; await document.fonts.load('italic 500 40px "Playfair Display"', 'A');
+  await Promise.all(PHOTOS.map(n => new Promise(r => { const im = new Image(); im.onload = () => { PH[n] = im; r(); }; im.onerror = r; im.src = '../out/icon/' + n + '.jpg'; })));
+  icDraw(0); return true;
+})();
